@@ -5,3 +5,7 @@ export enum HttpMethod {
   PATCH = 'PATCH',
   DELETE = 'DELETE',
 }
+
+export enum TokenType {
+  REFRESH = 'REFRESH'
+}

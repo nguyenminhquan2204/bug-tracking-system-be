@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, Relation } from 'typeorm';
 import { Role } from './role.entity';
 import { BaseEntity } from './base.entity';
-import { HttpMethod } from 'src/shared/constants/other.constant';
+// import { HttpMethod } from 'src/shared/constants/other.constant';
+import { HttpMethod } from '../../shared/constants/other.constant';
 
 @Entity('permissions')
 export class Permission extends BaseEntity {
