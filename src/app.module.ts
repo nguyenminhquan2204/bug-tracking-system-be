@@ -5,9 +5,11 @@ import { DatabaseModule } from './database/database.module';
 import { UserModule } from './routes/user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { RoleModule } from './routes/role/role.module';
+import { ProjectModule } from './routes/project/project.module';
+import { BugModule } from './routes/bug/bug.module';
 
 @Module({
-  imports: [DatabaseModule, SharedModule, UserModule, RoleModule],
+  imports: [DatabaseModule, SharedModule, UserModule, RoleModule, ProjectModule, BugModule],
   controllers: [AppController],
   providers: [AppService],
 })
