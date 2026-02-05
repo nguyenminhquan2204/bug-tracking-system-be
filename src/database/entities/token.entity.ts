@@ -1,7 +1,7 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from './base.entity';
-// import { TokenType } from 'src/shared/constants/other.constant';
 import { TokenType } from '../../shared/constants/other.constant';
+import { User } from './user.entity';
 
 @Entity('tokens')
 export class Token extends BaseEntity {
@@ -11,17 +11,24 @@ export class Token extends BaseEntity {
   @Column({ name: 'tokenHash', length: 255 })
   tokenHash: string;
 
+  @Column({ type: 'int' })
+  userId: number;
+
+  @ManyToOne(() => User, (user) => user.tokens, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
   @Column({
-    name: 'token_type',
+    name: 'tokenType',
     type: 'enum',
     enum: TokenType,
-    default: TokenType.REFRESH,
+    default: TokenType.REFRESH_TOKEN,
   })
   tokenType: TokenType;
 
   @Column({ name: 'expiresAt', type: 'timestamp' })
   expiresAt: Date;
 
-   @Column({ name: 'revokedAt', type: 'timestamp', nullable: true })
-   revokedAt: Date | null;
+  @Column({ name: 'revokedAt', type: 'timestamp', nullable: true })
+  revokedAt: Date | null;
 }

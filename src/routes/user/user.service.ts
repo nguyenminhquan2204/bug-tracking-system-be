@@ -42,4 +42,8 @@ export class UserService {
   async deleteById(userId: number) {
     return await this.userRepo.deleteById(userId);
   }
+
+  async getInfoUserByEmailIncludeRole(email: string) {
+    return await this.userRepo.getInfoUserByEmailIncludeRole(email);
+  }
 }

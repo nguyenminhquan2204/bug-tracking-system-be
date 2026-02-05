@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserBodyType, GetDetailUserResType, GetUsersQueryType, GetUsersResType, UpdateUserBodyType } from './user.model';
+import { CreateUserBodyType, GetUsersQueryType, GetUsersResType, UpdateUserBodyType } from './user.model';
 import { UserNotFound } from './user.error';
+import { UserType } from 'src/shared/models/share-user.model';
 
 @Injectable()
 export class UserRepo {
@@ -63,5 +64,14 @@ export class UserRepo {
     if(!user) throw UserNotFound;
 
     return isHard ? this.repository.delete({ id: userId }) : this.repository.softDelete({ id: userId });
+  }
+
+  async getInfoUserByEmailIncludeRole(email: string): Promise<UserType | null> {
+    return await this.repository.findOne({
+      where: { email: email },
+      relations: {
+        role: true
+      }
+    })
   }
 }

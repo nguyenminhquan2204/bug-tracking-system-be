@@ -7,5 +7,5 @@ export enum HttpMethod {
 }
 
 export enum TokenType {
-  REFRESH = 'REFRESH'
+  REFRESH_TOKEN = 'REFRESH_TOKEN'
 }
