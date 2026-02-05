@@ -8,9 +8,10 @@ import { RoleModule } from './routes/role/role.module';
 import { ProjectModule } from './routes/project/project.module';
 import { BugModule } from './routes/bug/bug.module';
 import { AuthModule } from './routes/auth/auth.module';
+import { PermissionModule } from './routes/permission/permission.module';
 
 @Module({
-  imports: [DatabaseModule, SharedModule, UserModule, RoleModule, ProjectModule, BugModule, AuthModule],
+  imports: [DatabaseModule, SharedModule, UserModule, RoleModule, ProjectModule, BugModule, AuthModule, PermissionModule],
   controllers: [AppController],
   providers: [AppService],
 })
