@@ -20,4 +20,18 @@ export class AuthRepo {
          token: refreshToken 
       });
    }
+
+   async findRefreshTokenIncludeUserRole(userId: number, refreshToken: string) {
+      return await this.repository.findOne({
+         where: {
+            token: refreshToken,
+            userId: userId
+         },
+         relations: {
+            user: {
+               role: true
+            },
+         }
+      })
+   }
 }

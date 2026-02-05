@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { HasingService } from 'src/shared/services/hasing.service';
 import { TokenService } from 'src/shared/services/token.service';
 import { UserService } from '../user/user.service';
-import { LoginBodyType, RefreshTokenBodyType } from './auth.model';
+import { LoginBodyType, LogoutBodyType, RefreshTokenBodyType } from './auth.model';
 import { AuthRepo } from './auth.repo';
 import { TokenType } from 'src/shared/constants/other.constant';
 import { randomUUID } from 'crypto';
@@ -54,7 +54,7 @@ export class AuthService {
       return token;
    }
 
-   async logout(body: RefreshTokenBodyType) {
+   async logout(body: LogoutBodyType) {
       const { refreshToken } = body;
 
       await this.tokenService.verifyRefreshToken(refreshToken);
@@ -66,5 +66,24 @@ export class AuthService {
       }
 
       return { message: 'Logout successfully'}
+   }
+
+   async refreshToken(body: RefreshTokenBodyType) {
+      const { refreshToken } = body;
+      const { userId } = await this.tokenService.verifyRefreshToken(refreshToken);
+      
+      const refreshTokenInDb = await this.authRepo.findRefreshTokenIncludeUserRole(userId, refreshToken);
+      if(!refreshTokenInDb) throw new UnauthorizedException('Refresh token not found');
+
+      const deleteRefreshToken$ = this.authRepo.deleteRefreshToken(refreshToken);
+      const tokens$ = this.generateTokens({ 
+         userId: refreshTokenInDb.userId,
+         roleId: refreshTokenInDb.user.role.id,
+         roleName: refreshTokenInDb.user.role.name,
+      })
+
+      const [tokens] = await Promise.all([tokens$, deleteRefreshToken$]);
+      
+      return tokens;
    }
 }

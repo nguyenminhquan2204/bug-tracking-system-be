@@ -10,6 +10,9 @@ export const RefreshTokenBodySchema = z.object({
    refreshToken: z.string()
 }).strict()
 
+export const LogoutBodySchema = RefreshTokenBodySchema;
+
 export type LoginBodyType = z.infer<typeof LoginBodySchema>;
 export type RefreshTokenBodyType = z.infer<typeof RefreshTokenBodySchema>;
+export type LogoutBodyType = z.infer<typeof LogoutBodySchema>;
 
