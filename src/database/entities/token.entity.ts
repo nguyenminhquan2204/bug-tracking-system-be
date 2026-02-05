@@ -8,8 +8,8 @@ export class Token extends BaseEntity {
    @Column({ type: 'uuid', unique: true })
   tokenId: string;
 
-  @Column({ name: 'tokenHash', length: 255 })
-  tokenHash: string;
+  @Column({ name: 'token', length: 255 })
+  token: string;
 
   @Column({ type: 'int' })
   userId: number;

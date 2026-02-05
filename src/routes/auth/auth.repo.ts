@@ -11,7 +11,13 @@ export class AuthRepo {
       private readonly repository: Repository<Token>
    ) {}
 
-   async createRefreshToken(data: { tokenHash: string, userId: number, expiresAt: Date, tokenType: TokenType.REFRESH_TOKEN, tokenId: string }) {
+   async createRefreshToken(data: { token: string, userId: number, expiresAt: Date, tokenType: TokenType.REFRESH_TOKEN, tokenId: string }) {
       return await this.repository.save(data);
+   }
+
+   async deleteRefreshToken(refreshToken: string) {
+      return await this.repository.delete({
+         token: refreshToken 
+      });
    }
 }

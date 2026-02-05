@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { HasingService } from 'src/shared/services/hasing.service';
 import { TokenService } from 'src/shared/services/token.service';
 import { UserService } from '../user/user.service';
-import { LoginBodyType } from './auth.model';
+import { LoginBodyType, RefreshTokenBodyType } from './auth.model';
 import { AuthRepo } from './auth.repo';
 import { TokenType } from 'src/shared/constants/other.constant';
 import { randomUUID } from 'crypto';
@@ -26,10 +26,9 @@ export class AuthService {
          this.tokenService.signRefeshToken({ userId: payload.userId })
       ])
       const decodedRefreshToken = await this.tokenService.verifyRefreshToken(refreshToken);
-      const tokenHasing = await this.hasingService.hash(refreshToken);
       const tokenId = randomUUID()
       await this.authRepo.createRefreshToken({
-         tokenHash: tokenHasing,
+         token: refreshToken,
          userId: payload.userId,
          expiresAt: new Date(decodedRefreshToken.exp * 1000),
          tokenType: TokenType.REFRESH_TOKEN,
@@ -53,5 +52,19 @@ export class AuthService {
       })
 
       return token;
+   }
+
+   async logout(body: RefreshTokenBodyType) {
+      const { refreshToken } = body;
+
+      await this.tokenService.verifyRefreshToken(refreshToken);
+
+      const result = await this.authRepo.deleteRefreshToken(refreshToken);
+      
+      if (!result.affected) {
+         throw new BadRequestException('Refresh token not found');
+      }
+
+      return { message: 'Logout successfully'}
    }
 }
