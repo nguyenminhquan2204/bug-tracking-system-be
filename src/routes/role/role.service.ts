@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { RoleRepo } from './role.repo';
 import { CreateRoleBodyType, GetRolesBodyType } from './role.model';
 
@@ -11,6 +11,13 @@ export class RoleService {
       if(existingRoleName) throw new ConflictException('Role name is existing!')
 
       return await this.roleRepo.create(data);
+   }
+
+   async getRoleDetailById(id: number) {
+      const existing = await this.roleRepo.getDetailRoleById(id);
+      if(!existing) throw new BadRequestException('Role not found');
+
+      return await this.roleRepo.getDetailRoleIncludePermission(id);
    }
 
    async list(query: GetRolesBodyType) {

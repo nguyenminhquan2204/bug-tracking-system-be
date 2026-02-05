@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleBodyDTO, GetRolesBodyDTO } from './role.dto';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
@@ -10,6 +10,12 @@ export class RoleController {
    @Get()
    async list(@Query() query: GetRolesBodyDTO) {
       const response = await this.roleService.list(query);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
+   @Get(':id')
+   async getRoleDetailById(@Param('id', ParseIntPipe) id: number) {
+      const response = await this.roleService.getRoleDetailById(id);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 

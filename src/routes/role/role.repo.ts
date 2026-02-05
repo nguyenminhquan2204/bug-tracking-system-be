@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Role } from "src/database/entities/role.entity";
 import { Repository } from "typeorm";
-import { CreateRoleBodyType, GetRolesBodyType, GetRolesResType } from "./role.model";
+import { CreateRoleBodyType, GetRoleDetailIncludePermissionType, GetRolesBodyType, GetRolesResType } from "./role.model";
 
 @Injectable()
 export class RoleRepo {
@@ -28,6 +28,23 @@ export class RoleRepo {
          limit: pagination.limit,
          totalPages: Math.ceil(total / pagination.limit)
       }
+   }
+
+   async getDetailRoleById(id: number) {
+      return await this.repository.findOne({
+         where: { id: id }
+      })
+   }
+
+   async getDetailRoleIncludePermission(id: number): Promise<GetRoleDetailIncludePermissionType | null> {
+      return await this.repository.findOne({
+         where: {
+            id: id
+         },
+         relations: {
+            permissions: true
+         }
+      })
    }
 
    async create(data: CreateRoleBodyType) {

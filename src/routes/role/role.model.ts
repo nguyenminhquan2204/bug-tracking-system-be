@@ -1,3 +1,4 @@
+import { PermissionSchema } from "src/shared/models/share-permission.model";
 import z from "zod";
 
 export const RoleSchema = z.object({
@@ -30,6 +31,11 @@ export const GetRolesResSchema = z.object({
   totalPages: z.number()
 });
 
+export const GetRoleDetailIncludePermission = RoleSchema.extend({
+   permissions: z.array(PermissionSchema)
+})
+
 export type CreateRoleBodyType = z.infer<typeof CreateRoleBodySchema>;
 export type GetRolesBodyType = z.infer<typeof GetRolesBodySchema>;
 export type GetRolesResType = z.infer<typeof GetRolesResSchema>;
+export type GetRoleDetailIncludePermissionType = z.infer<typeof GetRoleDetailIncludePermission>;

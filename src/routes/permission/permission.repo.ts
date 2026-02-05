@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Permission } from "src/database/entities/permission.entity";
 import { Repository } from "typeorm";
-import { CreatePermissionBodyType, GetPermissionsQueryType, PermissionType, UpdatePermissionBodyType } from "./permission.model";
+import { CreatePermissionBodyType, GetPermissionsQueryType, UpdatePermissionBodyType } from "./permission.model";
+import { PermissionType } from "src/shared/models/share-permission.model";
 
 @Injectable()
 export class PermissionRepo {
