@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs
 import { RoleService } from './role.service';
 import { CreateRoleBodyDTO, GetRolesBodyDTO } from './role.dto';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
+import { IsPublic } from 'src/shared/common/decorators/auth.decorator';
 
 @Controller('role')
 export class RoleController {
@@ -14,6 +15,7 @@ export class RoleController {
    }
 
    @Get(':id')
+   // @IsPublic()
    async getRoleDetailById(@Param('id', ParseIntPipe) id: number) {
       const response = await this.roleService.getRoleDetailById(id);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);

@@ -23,4 +23,8 @@ export class RoleService {
    async list(query: GetRolesBodyType) {
       return await this.roleRepo.list(query);
    }
+
+   async findRoleAuthById({ roleId, path, method }: { roleId: number, path: string, method: any }) {
+      return await this.roleRepo.findRoleAuthById({ roleId, path, method });
+   }
 }

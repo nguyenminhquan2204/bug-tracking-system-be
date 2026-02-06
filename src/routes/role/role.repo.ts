@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Role } from "src/database/entities/role.entity";
-import { Repository } from "typeorm";
-import { CreateRoleBodyType, GetRoleDetailIncludePermissionType, GetRolesBodyType, GetRolesResType } from "./role.model";
+import { IsNull, Repository } from "typeorm";
+import { CreateRoleBodyType, GetRolesBodyType, GetRolesResType } from "./role.model";
+import { GetRoleDetailIncludePermissionType } from "src/shared/models/share-role.model";
 
 @Injectable()
 export class RoleRepo {
@@ -55,5 +56,20 @@ export class RoleRepo {
       return await this.repository.findOne({
          where: { name: name }
       })
+   }
+
+   async findRoleAuthById({ roleId, path, method }: { roleId: number, path: string, method: any }) {
+      return await this.repository
+         .createQueryBuilder('role')
+         .leftJoinAndSelect(
+            'role.permissions',
+            'permission',
+            'permission.deletedAt IS NULL AND permission.path = :path AND permission.method = :method',
+            { path, method }
+         )
+         .where('role.id = :roleId', { roleId })
+         .andWhere('role.deletedAt IS NULL')
+         .getOne()
+
    }
 }
