@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateUserBodyType, GetUsersQueryType, GetUsersResType, UpdateUserBodyType } from './user.model';
 import { UserNotFound } from './user.error';
 import { UserType } from 'src/shared/models/share-user.model';
@@ -18,18 +18,37 @@ export class UserRepo {
     return await this.repository.save(user);
   }
 
+  async listAdmin(roleId: number) {
+    const data = await this.repository.find({
+      where: { roleId: roleId }
+    });
+    return { items: data }
+  }
+
   async list(pagination: GetUsersQueryType): Promise<GetUsersResType> {
     const skip = (pagination.page - 1) * pagination.limit;
     const take = pagination.limit;
+    const userName = pagination.userName;
+    const roleId = pagination.roleId;
+
+    const where: any = {};
+
+    if (userName) where.userName = ILike(`%${userName}%`);
+
+    if (roleId) where.roleId = roleId;
 
     const [items, total] = await this.repository.findAndCount({
+      where,
+      relations: {
+        role: true
+      },
       skip,
       take,
       order: { createdAt: 'DESC' }
     });
 
     return {
-      data: items,
+      items: items,
       totalItems: total,
       page: pagination.page,
       limit: pagination.limit,

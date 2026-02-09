@@ -17,7 +17,13 @@ export const ProjectSchema = z.object({
   deletedBy: z.number().nullable().optional(),
 })
 
-export const GetProjectsQueryBodySchema = z.object({
+export const GetProjectsQueryBodySchema = ProjectSchema.pick({
+   name: true,
+   status: true,
+   startDate: true,
+   endDate: true,
+   manageUserId: true,
+}).extend({
    page: z.number().default(1),
    limit: z.number().default(10)
 })

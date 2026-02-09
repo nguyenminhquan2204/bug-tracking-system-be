@@ -15,6 +15,6 @@ async function bootstrap() {
   });
 
   await app.listen(port);
-  console.log(`🚀 bug-tracking-system-be running on http://localhost:${port}`);
+  console.log(`🏃‍♂️ bug-tracking-system-be running on http://localhost:${port}`);
 }
 bootstrap();

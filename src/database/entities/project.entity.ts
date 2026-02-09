@@ -28,7 +28,7 @@ export class Project extends BaseEntity {
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'manageUserId' })
-  manager: User;
+  managerUserInfo: User;
 
   @Column({ nullable: true })
   manageUserId: number | null;

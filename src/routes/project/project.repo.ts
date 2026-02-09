@@ -12,23 +12,62 @@ export class ProjectRepo {
    ) {}
 
    async list(query: GetProjectsQueryBodyType) {
-      const { limit, page } = query;
-      const skip = (page - 1) * limit;
-      const take = limit;
+      const {
+         page,
+         limit,
+         name,
+         status,
+         startDate,
+         endDate,
+         manageUserId,
+      } = query;
 
-      const [items, total] = await this.repository.findAndCount({
-         skip,
-         take,
-         order: { createdAt: 'DESC' }
-      });
+      const skip = (page - 1) * limit;
+
+      const qb = this.repository
+         .createQueryBuilder('project')
+         .leftJoinAndSelect('project.managerUserInfo', 'manager')
+         .orderBy('project.createdAt', 'DESC')
+         .skip(skip)
+         .take(limit);
+
+      if (name) {
+         qb.andWhere('project.name LIKE :name', {
+            name: `%${name}%`,
+         });
+      }
+
+      if (status) {
+         qb.andWhere('project.status = :status', { status });
+      }
+
+      if (manageUserId) {
+         qb.andWhere('project.manageUserId = :manageUserId', {
+            manageUserId,
+         });
+      }
+
+      if (startDate) {
+         qb.andWhere('project.startDate >= :startDate', {
+            startDate,
+         });
+      }
+
+      if (endDate) {
+         qb.andWhere('project.endDate <= :endDate', {
+            endDate,
+         });
+      }
+
+      const [items, total] = await qb.getManyAndCount();
 
       return {
-         data: items,
+         items,
          totalItems: total,
-         page: page,
-         limit: limit,
-         totalPages: Math.ceil(total / limit)
-      }
+         page,
+         limit,
+         totalPages: Math.ceil(total / limit),
+      };
    }
 
    async getProjectById(projectId: number): Promise<ProjectType | null> {

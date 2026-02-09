@@ -6,6 +6,7 @@ import { CreateProjectBodyType, GetProjectsQueryBodyType, UpdateProjectBodyType 
 export class ProjectService {
    constructor(private readonly projectRepo: ProjectRepo) {}
 
+
    list(query: GetProjectsQueryBodyType) {
       return this.projectRepo.list(query);
    }

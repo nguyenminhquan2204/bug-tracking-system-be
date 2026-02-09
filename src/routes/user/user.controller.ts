@@ -29,6 +29,12 @@ export class UserController {
     return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
   }
 
+  @Get('get-admins')
+  async listAdmin() {
+    const response = await this.userService.listAdmin();
+    return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+  }
+
   @Get(':userId')
   async getUserById(@Param('userId', ParseIntPipe) userId: number) {
     const response = await this.userService.getUserById(userId);

@@ -3,12 +3,14 @@ import { UserRepo } from './user.repo';
 import { CreateUserBodyType, GetUsersQueryType, UpdateUserBodyType } from './user.model';
 import { HasingService } from 'src/shared/services/hasing.service';
 import { isPostgresUniqueError } from 'src/shared/helpers/error';
+import { RoleService } from '../role/role.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepo: UserRepo,
     private readonly hasingService: HasingService,
+    private readonly roleService: RoleService
   ) {}
 
   async create(data: CreateUserBodyType) {
@@ -25,6 +27,12 @@ export class UserService {
 
       throw error;
     }
+  }
+
+  async listAdmin() {
+    const roleAdminId = await this.roleService.getIdRoleAdmin();
+    if(roleAdminId == null) return;
+    return await this.userRepo.listAdmin(roleAdminId);
   }
 
   async list(pagination: GetUsersQueryType) {

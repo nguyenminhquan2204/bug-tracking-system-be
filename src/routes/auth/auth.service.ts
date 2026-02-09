@@ -51,7 +51,7 @@ export class AuthService {
          roleName: user.role.name
       })
 
-      return token;
+      return { token, role: user.role.name };
    }
 
    async logout(body: LogoutBodyType) {

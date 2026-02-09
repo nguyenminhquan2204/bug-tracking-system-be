@@ -23,12 +23,18 @@ export class RoleRepo {
       });
 
       return {
-         data: items,
+         items: items,
          totalItems: total,
          page: pagination.page,
          limit: pagination.limit,
          totalPages: Math.ceil(total / pagination.limit)
       }
+   }
+
+   async getIdRoleAdmin() {
+      return await this.repository.findOne({
+         where: { name: 'Admin' }
+      })
    }
 
    async getDetailRoleById(id: number) {

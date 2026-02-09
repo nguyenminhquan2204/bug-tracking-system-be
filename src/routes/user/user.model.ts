@@ -10,16 +10,20 @@ export const CreateUserBodySchema = UserSchema.pick({
 
 export const UpdateUserBodySchema = UserSchema.pick({
   userName: true,
+  email: true,
   roleId: true,
+  isActive: true,
 }).strict()
 
 export const GetUsersQuerySchema = z.object({
-   page: z.coerce.number().int().positive().default(1),
-   limit: z.coerce.number().int().positive().default(10),
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().default(10),
+  userName: z.string(),
+  roleId: z.number(),
 }).strict();
 
 export const GetUsersResSchema = z.object({
-  data: z.array(
+  items: z.array(
     UserSchema.pick({
       id: true,
       userName: true,

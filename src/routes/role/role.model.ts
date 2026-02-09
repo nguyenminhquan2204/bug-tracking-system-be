@@ -18,7 +18,7 @@ export const GetRolesBodySchema = z.object({
 }).strict()
 
 export const GetRolesResSchema = z.object({
-  data: z.array(
+  items: z.array(
       RoleSchema.pick({
          id: true,
          name: true,

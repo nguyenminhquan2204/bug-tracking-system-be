@@ -2,20 +2,27 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginBodyDTO, LogoutBodyDTO, RefreshTokenBodyDTO } from './auth.dto';
 import { IsPublic } from 'src/shared/common/decorators/auth.decorator';
+import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
 
 @Controller('auth')
+@IsPublic()
 export class AuthController {
    constructor(private readonly authService: AuthService) {}
 
    @Post('login')
-   @IsPublic()
    async login(@Body() body: LoginBodyDTO) {
-      return await this.authService.login(body);
+      const response = await this.authService.login(body);
+      return new SuccessResponse({ 
+         accessToken: response.token.accessToken,
+         refreshToken: response.token.refreshToken,
+         role: response.role
+      }, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK)
    }
 
    @Post('logout')
    async logout(@Body() body: LogoutBodyDTO) {
-      return await this.authService.logout(body);
+      const response = await this.authService.logout(body);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
    @Post('refresh-token')
