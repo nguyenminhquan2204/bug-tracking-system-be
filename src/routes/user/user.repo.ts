@@ -20,7 +20,10 @@ export class UserRepo {
 
   async listUserWithRoleId(roleId: number) {
     const data = await this.repository.find({
-      where: { roleId: roleId }
+      where: { roleId: roleId },
+      relations: {
+        role: true
+      }
     });
     return { items: data }
   }

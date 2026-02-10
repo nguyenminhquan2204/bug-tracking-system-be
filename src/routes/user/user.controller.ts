@@ -37,14 +37,30 @@ export class UserController {
 
   @Get('get-testers')
   async listTester() {
-    const response = await this.userService.listTester();
-    return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+    const response: any = await this.userService.listTester() ?? [];
+    return new SuccessResponse(
+      {
+        items: response?.items.map((item) => ({
+          id: item.id,
+          userName: item.userName,
+          role: item.role?.name,
+        })),
+      },
+      DEFAULT_SUCCESS_MESSAGE, 
+      HttpStatus.OK
+    );
   }
 
-  @Get('get-develpers')
+  @Get('get-developers')
   async listDeveloper() {
-    const response = await this.userService.listDeveloper();
-    return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+    const response: any = await this.userService.listDeveloper() ?? [];
+    return new SuccessResponse({
+      items: response?.items.map((item) => ({
+        id: item.id,
+        userName: item.userName,
+        role: item.role?.name
+      }))
+    }, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
   }
 
   @Get(':userId')

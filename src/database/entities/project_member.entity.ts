@@ -1,10 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, Index } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Index, Unique } from "typeorm";
 import { User } from "./user.entity";
 import { Project } from "./project.entity";
 import { BaseEntity } from "./base.entity";
 
-@Index('idx_project_members_user_id', ['userId'])
-@Index('idx_project_members_project_id', ['projectId'])
+@Unique('uq_project_members_user_project', ['userId', 'projectId'])
 @Entity('project_members')
 export class ProjectMember extends BaseEntity {
   @Column()
