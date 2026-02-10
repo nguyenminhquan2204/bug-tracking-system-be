@@ -1,18 +1,20 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Index } from "typeorm";
 import { User } from "./user.entity";
 import { Project } from "./project.entity";
 import { BaseEntity } from "./base.entity";
 
+@Index('idx_project_members_user_id', ['userId'])
+@Index('idx_project_members_project_id', ['projectId'])
 @Entity('project_members')
 export class ProjectMember extends BaseEntity {
-  @PrimaryColumn()
+  @Column()
   userId: number;
 
-  @PrimaryColumn()
+  @Column()
   projectId: number;
 
   @Column()
-  projectRole: string;
+  role: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })

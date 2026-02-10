@@ -32,7 +32,19 @@ export class UserService {
   async listAdmin() {
     const roleAdminId = await this.roleService.getIdRoleAdmin();
     if(roleAdminId == null) return;
-    return await this.userRepo.listAdmin(roleAdminId);
+    return await this.userRepo.listUserWithRoleId(roleAdminId);
+  }
+
+  async listTester() {
+    const roleTesterId = await this.roleService.getIdRoleTester();
+    if(roleTesterId == null) return;
+    return await this.userRepo.listUserWithRoleId(roleTesterId);
+  }
+
+  async listDeveloper() {
+    const roleDeveloperId = await this.roleService.getIdRoleDeveloper();
+    if(roleDeveloperId == null) return;
+    return await this.userRepo.listUserWithRoleId(roleDeveloperId);
   }
 
   async list(pagination: GetUsersQueryType) {

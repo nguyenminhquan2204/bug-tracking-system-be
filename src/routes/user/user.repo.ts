@@ -18,7 +18,7 @@ export class UserRepo {
     return await this.repository.save(user);
   }
 
-  async listAdmin(roleId: number) {
+  async listUserWithRoleId(roleId: number) {
     const data = await this.repository.find({
       where: { roleId: roleId }
     });

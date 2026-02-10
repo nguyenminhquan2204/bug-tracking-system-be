@@ -37,6 +37,18 @@ export class RoleRepo {
       })
    }
 
+   async getIdRoleTester() {
+      return await this.repository.findOne({
+         where: { name: 'Tester' }
+      })
+   }
+
+   async getIdRoleDeveloper() {
+      return await this.repository.findOne({
+         where: { name: 'Developer' }
+      })
+   }
+
    async getDetailRoleById(id: number) {
       return await this.repository.findOne({
          where: { id: id }

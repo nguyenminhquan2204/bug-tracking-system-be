@@ -18,6 +18,19 @@ export class RoleService {
       if(!response) return null;
       return response.id;
    }
+   
+   async getIdRoleTester() {
+      const response = await this.roleRepo.getIdRoleTester();
+      if(!response) return null;
+      return response.id;
+   }
+
+   async getIdRoleDeveloper() {
+      const response = await this.roleRepo.getIdRoleDeveloper();
+      if(!response) return null;
+      return response.id;
+   }
+
    async getRoleDetailById(id: number) {
       const existing = await this.roleRepo.getDetailRoleById(id);
       if(!existing) throw new BadRequestException('Role not found');

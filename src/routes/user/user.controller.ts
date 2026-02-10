@@ -35,6 +35,18 @@ export class UserController {
     return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
   }
 
+  @Get('get-testers')
+  async listTester() {
+    const response = await this.userService.listTester();
+    return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+  }
+
+  @Get('get-develpers')
+  async listDeveloper() {
+    const response = await this.userService.listDeveloper();
+    return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+  }
+
   @Get(':userId')
   async getUserById(@Param('userId', ParseIntPipe) userId: number) {
     const response = await this.userService.getUserById(userId);
