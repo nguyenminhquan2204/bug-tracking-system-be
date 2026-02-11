@@ -28,9 +28,9 @@ export class BugController {
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
-   @Post()
-   async create(@Body() body: CreateBugBodyDTO) {
-      const response = await this.bugService.create(body);
+   @Post(':developerId')
+   async create(@ActiveUser('userId') userId: number, @Param('developerId', ParseIntPipe) developerId: number, @Body() body: CreateBugBodyDTO) {
+      const response = await this.bugService.create(userId, developerId, body);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 

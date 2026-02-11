@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from '../user.service';
 import {
   DEFAULT_SUCCESS_MESSAGE,
   HttpStatus,
   SuccessResponse,
 } from 'src/shared/helpers/response';
-import { CreateUserBodyDTO, GetUsersQueryDTO, GetUsersResDTO, UpdateUserBodyDTO } from './user.dto';
+import { CreateUserBodyDTO, GetUsersQueryDTO, GetUsersResDTO, UpdateUserBodyDTO } from '../user.dto';
 import { ZodSerializerDto } from 'nestjs-zod';
 
 @Controller('user')

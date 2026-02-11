@@ -42,4 +42,9 @@ export class ProjectService {
    getMyProject(userId) {
       return this.projectMemberService.getMyProject(userId);
    }
+
+   async getDevelopersInProject(projectId: number) {
+      await this.getProjectById(projectId);
+      return await this.projectMemberService.getDevelopersInProject(projectId);
+   }
 }

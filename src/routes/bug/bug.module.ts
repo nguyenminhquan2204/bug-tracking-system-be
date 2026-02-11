@@ -6,10 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bug } from 'src/database/entities/bug.entity';
 import { BugHistory } from 'src/database/entities/bug_history.entity';
 import { BugHistoryRepo } from './repos/bug-history.repo';
+import { BugAssignment } from 'src/database/entities/bug_assignment.entity';
+import { BugAssignRepo } from './repos/bug-assign.repo';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Bug, BugHistory])],
+  imports: [TypeOrmModule.forFeature([Bug, BugHistory, BugAssignment])],
   controllers: [BugController],
-  providers: [BugService, BugRepo, BugHistoryRepo]
+  providers: [BugService, BugRepo, BugHistoryRepo, BugAssignRepo]
 })
 export class BugModule {}

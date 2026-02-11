@@ -90,4 +90,16 @@ export class ProjectMemberRepo {
          }
       })
    }
+
+   async getDevelopersInProject(projectId: number) {
+      return await this.repository.find({
+         where: { 
+            projectId: projectId,
+            role: 'Developer'
+         },
+         relations: {
+            user: true
+         }
+      })
+   }
 }
