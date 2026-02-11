@@ -22,6 +22,7 @@ export const CreateBugBodySchema = BugSchema.pick({
    description: true,
    projectId: true,
    reporterId: true,
+   priority: true
 }).strict()
 
 export const UpdateBugBodySchema = CreateBugBodySchema;

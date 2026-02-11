@@ -8,6 +8,7 @@ import { ProjectMemberRepo } from './project-member.repo';
 @Module({
   imports: [TypeOrmModule.forFeature([ProjectMember])],
   controllers: [ProjectMemberController],
-  providers: [ProjectMemberService, ProjectMemberRepo]
+  providers: [ProjectMemberService, ProjectMemberRepo],
+  exports: [ProjectMemberService]
 })
 export class ProjectMemberModule {}

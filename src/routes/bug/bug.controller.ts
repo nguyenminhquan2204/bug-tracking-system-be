@@ -3,7 +3,8 @@ import { BugService } from './bug.service';
 import { CreateBugBodyDTO, GetBugsQueryBodyDTO, UpdateBugBodyDTO, UpdateBugPriorityParamsDTO, UpdateBugStatusParamsDTO } from './bug.dto';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
 import { ZodValidationPipe } from 'src/shared/common/pipes/zod-validation.pipe';
-import { UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from './bug.model';
+import { UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from './models/bug.model';
+import { ActiveUser } from 'src/shared/common/decorators/active-user.decorator';
 
 @Controller('bug')
 export class BugController {
@@ -12,6 +13,12 @@ export class BugController {
    @Get()
    async list(@Query() query: GetBugsQueryBodyDTO) {
       const response = await this.bugService.list(query);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
+   @Get('all')
+   async getAll() {
+      const response = await this.bugService.getAll()
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
@@ -33,13 +40,13 @@ export class BugController {
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
-   @Get(':id/status')
-   async changeStatus(@Param('id', ParseIntPipe) id: number, @Body(new ZodValidationPipe(UpdateBugStatusParamsSchema)) body: UpdateBugStatusParamsDTO) {
-      const response = await this.bugService.changeStatus(id, body.status);
+   @Patch(':id/status')
+   async changeStatus(@ActiveUser('userId') userId: number, @Param('id', ParseIntPipe) bugId: number, @Body(new ZodValidationPipe(UpdateBugStatusParamsSchema)) body: UpdateBugStatusParamsDTO) {
+      const response = await this.bugService.changeStatus(userId, bugId, body.status);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
-   @Get(':id/priority')
+   @Patch(':id/priority')
    async changePriority(@Param('id', ParseIntPipe) id: number, @Body(new ZodValidationPipe(UpdateBugPriorityParamsSchema)) body: UpdateBugPriorityParamsDTO) {
       const response = await this.bugService.changePriority(id, body.priority);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);

@@ -79,4 +79,15 @@ export class ProjectMemberRepo {
 
       return { message: 'Restore member successfully.' };
    }
+
+   async getMyProject(userId: number) {
+      return await this.repository.find({
+         where: { userId: userId },
+         relations: {
+            project: {
+               managerUserInfo: true
+            }
+         }
+      })
+   }
 }

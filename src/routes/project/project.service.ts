@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProjectRepo } from './project.repo';
 import { CreateProjectBodyType, GetProjectsQueryBodyType, UpdateProjectBodyType } from './project.model';
+import { ProjectMemberService } from '../project-member/project-member.service';
 
 @Injectable()
 export class ProjectService {
-   constructor(private readonly projectRepo: ProjectRepo) {}
+   constructor(
+      private readonly projectRepo: ProjectRepo,
+      private readonly projectMemberService: ProjectMemberService
+   ) {}
 
 
    list(query: GetProjectsQueryBodyType) {
@@ -33,5 +37,9 @@ export class ProjectService {
       if(!existing) throw new NotFoundException('Project not found');
 
       return await this.projectRepo.delete(projectId);
+   }
+
+   getMyProject(userId) {
+      return this.projectMemberService.getMyProject(userId);
    }
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { ProjectService } from './project.service';
-import { CreateProjectBodyDTO, GetProjectsQueryBodyDTO, UpdateProjectBodyDTO } from './project.dto';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
+import { ProjectService } from '../project.service';
+import { CreateProjectBodyDTO, GetProjectsQueryBodyDTO, UpdateProjectBodyDTO } from '../project.dto';
 
 @Controller('project')
 export class ProjectController {

@@ -21,4 +21,8 @@ export class ProjectMemberService {
    restoreMember(projectId: number, userId: number) {
       return this.projectMemberRepo.restoreMember(projectId, userId);
    }
+
+   getMyProject(userId: number) {
+      return this.projectMemberRepo.getMyProject(userId);
+   }
 }

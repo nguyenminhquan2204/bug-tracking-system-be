@@ -5,7 +5,12 @@ import { Role } from "../entities/role.entity";
 import { HttpMethod } from "src/shared/constants/other.constant";
 import { AppModule } from "src/app.module";
 import { NestFactory } from "@nestjs/core";
-import envConfig from "src/shared/config";
+
+const TesterModule = [
+   'PROJECT-PUBLIC',
+   'BUG',
+   'PROFILE'
+]
 
 export async function seedCreatePermission() {
    const app = await NestFactory.create(AppModule);
@@ -83,10 +88,11 @@ export async function seedCreatePermission() {
    const updatedPermissionsInDb = await permissionRepo.find();
 
    const adminPermissionIds = updatedPermissionsInDb.map((item) => ({ id: item.id }))
-
+   const testerPermissionIds = updatedPermissionsInDb.filter((item) => TesterModule.includes(item.module)).map((item) => ({ id: item.id }))
+   
    await Promise.all([
       updateRole(adminPermissionIds, 'Admin'),
-      // updateRole(sellerPermissionIds, RoleName.Seller),
+      updateRole(testerPermissionIds, 'Tester'),
       // updateRole(clientPermissionIds, RoleName.Client)
    ]);
 
