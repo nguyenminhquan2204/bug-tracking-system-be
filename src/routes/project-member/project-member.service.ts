@@ -29,4 +29,8 @@ export class ProjectMemberService {
    getDevelopersInProject(projectId) {
       return this.projectMemberRepo.getDevelopersInProject(projectId);
    }
+
+   validProjectWithUserId(userId: number, projectId: number) {
+      return this.projectMemberRepo.findByUserIdAndProjectId(userId, projectId);
+   }
 }

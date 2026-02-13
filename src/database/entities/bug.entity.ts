@@ -6,7 +6,6 @@ import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
 import { BugHistory } from './bug_history.entity';
 import { BugAttachment } from './bug_attactment.entity';
 import { BugComment } from './bug_comment.entity';
-import { BugAssignment } from './bug_assignment.entity';
 
 @Entity('bugs')
 export class Bug extends BaseEntity {
@@ -30,6 +29,13 @@ export class Bug extends BaseEntity {
   @Column()
   reporterId: number;
 
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'developerId' })
+  developer: User;
+
+  @Column()
+  developerId: number;
+
   @Column({
     type: 'enum',
     enum: BugStatus,
@@ -43,9 +49,6 @@ export class Bug extends BaseEntity {
     default: BugPriority.LOW,
   })
   priority: BugPriority;
-
-  @OneToMany(() => BugAssignment, (assign) => assign.bug)
-  assignments: BugAssignment[];
 
   @OneToMany(() => BugComment, (comment) => comment.bug)
   comments: BugComment[];

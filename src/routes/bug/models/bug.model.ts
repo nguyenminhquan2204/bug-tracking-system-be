@@ -7,8 +7,10 @@ export const BugSchema = z.object({
    description: z.string(),
    projectId: z.number(),
    reporterId: z.number(),
+   developerId: z.number(),
    status: z.nativeEnum(BugStatus),
    priority: z.nativeEnum(BugPriority),
+
    createdAt: z.date(),
    updatedAt: z.date().nullable().optional(),
    deletedAt: z.date().nullable().optional(),
@@ -22,10 +24,14 @@ export const CreateBugBodySchema = BugSchema.pick({
    description: true,
    projectId: true,
    reporterId: true,
-   priority: true
+   priority: true,
+   developerId: true,
+   createdBy: true,
 }).strict()
 
-export const UpdateBugBodySchema = CreateBugBodySchema;
+export const UpdateBugBodySchema = CreateBugBodySchema.omit({
+   createdBy: true
+});
 
 export const GetBugsQueryBodySchema = z.object({
    limit: z.number().default(10),

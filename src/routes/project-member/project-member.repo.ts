@@ -102,4 +102,13 @@ export class ProjectMemberRepo {
          }
       })
    }
+
+   async findByUserIdAndProjectId(userId: number, projectId: number) {
+      return await this.repository.find({
+         where: {
+            userId: userId,
+            projectId: projectId
+         }
+      })
+   }
 }

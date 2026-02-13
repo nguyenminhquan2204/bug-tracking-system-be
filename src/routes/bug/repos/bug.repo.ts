@@ -36,14 +36,14 @@ export class BugRepo {
 
    async getAll() {
       const [todo, doing, prInReview, merged, readyForQc, qcInProgress, doneInDev, onStg] = await Promise.all([
-         this.repository.find({ where: { status: BugStatus.TODO }}),
-         this.repository.find({ where: { status: BugStatus.DOING }}),
-         this.repository.find({ where: { status: BugStatus.PR_IN_REVIEW }}),
-         this.repository.find({ where: { status: BugStatus.MERGED }}),
-         this.repository.find({ where: { status: BugStatus.READY_FOR_QC }}),
-         this.repository.find({ where: { status: BugStatus.QC_IN_PROGRESS }}),
-         this.repository.find({ where: { status: BugStatus.DONE_IN_DEV }}),
-         this.repository.find({ where: { status: BugStatus.ON_STG }}),
+         this.repository.find({ where: { status: BugStatus.TODO }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.DOING }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.PR_IN_REVIEW }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.MERGED }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.READY_FOR_QC }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.QC_IN_PROGRESS }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.DONE_IN_DEV }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.ON_STG }, relations: { developer: true, reporter: true }}),
       ])
       return {
          bugs: {
@@ -67,8 +67,8 @@ export class BugRepo {
       return await this.repository.save(body);
    }
 
-   async update(bugId: number, body: UpdateBugBodyType): Promise<any> {
-      await this.repository.update(bugId, body);
+   async update(changeById: number, bugId: number, body: UpdateBugBodyType): Promise<any> {
+      await this.repository.update(bugId, { ...body, updatedBy: changeById });
       return { message: 'Update project successfully!' }
    }
 

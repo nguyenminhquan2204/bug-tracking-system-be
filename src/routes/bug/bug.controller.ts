@@ -28,15 +28,19 @@ export class BugController {
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
-   @Post(':developerId')
-   async create(@ActiveUser('userId') userId: number, @Param('developerId', ParseIntPipe) developerId: number, @Body() body: CreateBugBodyDTO) {
-      const response = await this.bugService.create(userId, developerId, body);
+   @Post()
+   async create(@ActiveUser('userId') userId: number, @Body() body: CreateBugBodyDTO) {
+      const data = {
+         ...body,
+         createdBy: userId
+      }
+      const response = await this.bugService.create(data);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
    @Patch(':bugId')
-   async update(@Param('bugId', ParseIntPipe) bugId: number, @Body() body: UpdateBugBodyDTO) {
-      const response = await this.bugService.update(bugId, body);
+   async update(@ActiveUser('userId') changeById: number, @Param('bugId', ParseIntPipe) bugId: number, @Body() body: UpdateBugBodyDTO) {
+      const response = await this.bugService.update(changeById, bugId, body);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
