@@ -9,7 +9,8 @@ import { NestFactory } from "@nestjs/core";
 const TesterModule = [
    'PROJECT-PUBLIC',
    'BUG',
-   'PROFILE'
+   'PROFILE',
+   'FILE'
 ]
 
 export async function seedCreatePermission() {

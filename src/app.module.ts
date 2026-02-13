@@ -11,9 +11,10 @@ import { AuthModule } from './routes/auth/auth.module';
 import { PermissionModule } from './routes/permission/permission.module';
 import { ProfileModule } from './routes/profile/profile.module';
 import { ProjectMemberModule } from './routes/project-member/project-member.module';
+import { FileModule } from './routes/file/file.module';
 
 @Module({
-  imports: [DatabaseModule, SharedModule, UserModule, RoleModule, ProjectModule, BugModule, AuthModule, PermissionModule, ProfileModule, ProjectMemberModule],
+  imports: [DatabaseModule, SharedModule, UserModule, RoleModule, ProjectModule, BugModule, AuthModule, PermissionModule, ProfileModule, ProjectMemberModule, FileModule],
   controllers: [AppController],
   providers: [AppService],
 })
