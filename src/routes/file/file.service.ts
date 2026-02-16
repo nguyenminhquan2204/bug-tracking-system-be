@@ -17,8 +17,11 @@ export class FileService {
 
       return {
          data: {
-            url: res.Location
-         }
+            url: res.Location,
+            fileName: file.originalname,
+            fileType: file.mimetype,
+            size: file.size
+         },
       };
    }
 }

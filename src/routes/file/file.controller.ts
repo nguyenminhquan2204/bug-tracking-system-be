@@ -28,6 +28,6 @@ export class FileController {
       file: Express.Multer.File,
    ) {
       const response = await this.fileSerive.uploadFile(file);
-      return new SuccessResponse(response.data.url, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK)
+      return new SuccessResponse(response.data, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK)
    }
 }
