@@ -2,11 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { BugRepo } from './repos/bug.repo';
 import { CreateBugBodyType, GetBugsQueryBodyType, UpdateBugBodyType } from './models/bug.model';
 import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
+import { CreateBugCommentType } from './models/bug-comment.model';
+import { BugCommentRepo } from './repos/bug-comment.repo';
 
 @Injectable()
 export class BugService {
    constructor(
       private readonly bugRepo: BugRepo,
+      private readonly bugCommentRepo: BugCommentRepo
    ) {}
 
    list(query: GetBugsQueryBodyType) {
@@ -14,8 +17,12 @@ export class BugService {
    }
 
 
-   getAll() {
-      return this.bugRepo.getAll();
+   getAll(projectId: number) {
+      return this.bugRepo.getAll(projectId);
+   }
+
+   postCreateComment(userId: number, data: CreateBugCommentType & { bugId: number }) {
+      return this.bugCommentRepo.create(userId, data);
    }
 
    async getBugById(bugId: number) {

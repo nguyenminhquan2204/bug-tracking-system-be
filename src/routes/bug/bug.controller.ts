@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { BugService } from './bug.service';
-import { CreateBugBodyDTO, GetBugsQueryBodyDTO, UpdateBugBodyDTO, UpdateBugPriorityParamsDTO, UpdateBugStatusParamsDTO } from './bug.dto';
+import { CreateBugBodyDTO, GetBugsQueryBodyDTO, UpdateBugBodyDTO, UpdateBugPriorityParamsDTO, UpdateBugStatusParamsDTO } from './dtos/bug.dto';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
 import { ZodValidationPipe } from 'src/shared/common/pipes/zod-validation.pipe';
 import { UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from './models/bug.model';
 import { ActiveUser } from 'src/shared/common/decorators/active-user.decorator';
+import { CreateBugCommentDTO } from './dtos/bug-comment.dto';
 
 @Controller('bug')
 export class BugController {
@@ -16,9 +17,9 @@ export class BugController {
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
-   @Get('all')
-   async getAll() {
-      const response = await this.bugService.getAll()
+   @Get('all/:projectId')
+   async getAll(@Param('projectId', ParseIntPipe) projectId: number) {
+      const response = await this.bugService.getAll(projectId)
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
@@ -35,6 +36,12 @@ export class BugController {
          createdBy: userId
       }
       const response = await this.bugService.create(data);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
+   @Post(':bugId')
+   async createComment(@ActiveUser('userId') userId: number, @Param('bugId', ParseIntPipe) bugId: number, @Body() body: CreateBugCommentDTO) {
+      const response = await this.bugService.postCreateComment(userId, { ...body, bugId });
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 

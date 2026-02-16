@@ -34,16 +34,16 @@ export class BugRepo {
       }
    }
 
-   async getAll() {
+   async getAll(projectId: number) {
       const [todo, doing, prInReview, merged, readyForQc, qcInProgress, doneInDev, onStg] = await Promise.all([
-         this.repository.find({ where: { status: BugStatus.TODO }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.DOING }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.PR_IN_REVIEW }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.MERGED }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.READY_FOR_QC }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.QC_IN_PROGRESS }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.DONE_IN_DEV }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.ON_STG }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.TODO, projectId }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.DOING, projectId }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.PR_IN_REVIEW, projectId }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.MERGED, projectId }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.READY_FOR_QC, projectId }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.QC_IN_PROGRESS, projectId }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.DONE_IN_DEV, projectId }, relations: { developer: true, reporter: true }}),
+         this.repository.find({ where: { status: BugStatus.ON_STG, projectId }, relations: { developer: true, reporter: true }}),
       ])
       return {
          bugs: {

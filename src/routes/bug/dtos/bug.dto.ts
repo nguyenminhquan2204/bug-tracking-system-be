@@ -1,5 +1,5 @@
 import { createZodDto } from "nestjs-zod";
-import { CreateBugBodySchema, GetBugsQueryBodySchema, UpdateBugBodySchema, UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from "./models/bug.model";
+import { CreateBugBodySchema, GetBugsQueryBodySchema, UpdateBugBodySchema, UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from "../models/bug.model";
 
 export class GetBugsQueryBodyDTO extends createZodDto(GetBugsQueryBodySchema) {}
 export class CreateBugBodyDTO extends createZodDto(CreateBugBodySchema) {}

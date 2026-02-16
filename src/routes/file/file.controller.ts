@@ -2,6 +2,7 @@ import { Controller, MaxFileSizeValidator, Post, UploadedFile, UseInterceptors }
 import { FileService } from './file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseFilePipeWithUnlink } from './parse-file-pipe-with-unlink.pipe';
+import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
 
 @Controller('file')
 export class FileController {
@@ -26,6 +27,7 @@ export class FileController {
       )
       file: Express.Multer.File,
    ) {
-      return this.fileSerive.uploadFile(file);
+      const response = await this.fileSerive.uploadFile(file);
+      return new SuccessResponse(response.data.url, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK)
    }
 }
