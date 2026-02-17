@@ -24,4 +24,22 @@ export class FileService {
          },
       };
    }
+
+   async uploadFileFromFormData(file: Express.Multer.File) {
+      const res = await this.s3Service.uploadedFileFromFormData({
+         filename: 'images/' + file.originalname,
+         buffer: file.buffer,
+         contentType: file.mimetype
+      });
+
+      return {
+         data: {
+            url: res.Location,
+            fileName: file.originalname,
+            fileType: file.mimetype,
+            size: file.size
+         },
+      };
+   }
+
 }

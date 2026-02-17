@@ -1,10 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Project } from './project.entity';
 import { User } from './user.entity';
 import { BaseEntity } from './base.entity';
 import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
 import { BugHistory } from './bug_history.entity';
-import { BugAttachment } from './bug_attactment.entity';
 import { BugComment } from './bug_comment.entity';
 
 @Entity('bugs')
@@ -52,9 +51,6 @@ export class Bug extends BaseEntity {
 
   @OneToMany(() => BugComment, (comment) => comment.bug)
   comments: BugComment[];
-
-  @OneToMany(() => BugAttachment, (attach) => attach.bug)
-  attachments: BugAttachment[];
 
   @OneToMany(() => BugHistory, (history) => history.bug)
   history: BugHistory[];

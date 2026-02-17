@@ -1,24 +1,25 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { BaseEntity } from "./base.entity";
-import { Bug } from "./bug.entity";
 import { File } from "./file.entity";
+import { BugComment } from "./bug_comment.entity";
 
 @Entity('bug_attachments')
 export class BugAttachment extends BaseEntity {
-  @PrimaryColumn()
-  bugId: number;
 
-  @PrimaryColumn()
+  @Column()
   fileId: number;
 
-  @Column({ default: 0 })
-  order: number;
+  @Column()
+  commentId: number;
 
-  @ManyToOne(() => Bug, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'bugId' })
-  bug: Bug;
+  @ManyToOne(() => BugComment, (comment) => comment.attachments, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'commentId' })
+  comment: BugComment;
 
   @ManyToOne(() => File)
   @JoinColumn({ name: 'fileId' })
   file: File;
+
+  @Column({ default: 0 })
+  order: number;
 }

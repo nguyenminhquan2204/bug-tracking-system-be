@@ -1,9 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "./base.entity";
 import { Bug } from "./bug.entity";
 import { User } from "./user.entity";
+import { BugAttachment } from "./bug_attactment.entity";
 
-// bug_comment.entity.ts
 @Entity('bug_comments')
 export class BugComment extends BaseEntity {
   @ManyToOne(() => Bug, (bug) => bug.comments, { onDelete: 'CASCADE' })
@@ -19,6 +19,9 @@ export class BugComment extends BaseEntity {
 
   @Column()
   userId: number;
+
+  @OneToMany(() => BugAttachment, (attachment) => attachment.comment)
+  attachments: BugAttachment[]
 
   @Column('text')
   content: string;

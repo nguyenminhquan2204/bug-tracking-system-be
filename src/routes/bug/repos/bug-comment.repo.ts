@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BugComment } from 'src/database/entities/bug_comment.entity';
@@ -12,6 +12,6 @@ export class BugCommentRepo {
    ) {}
 
    async create(userId: number, data: CreateBugCommentType & { bugId: number }) {
-      return await this.repository.save({...data, createdBy: userId });
+      return await this.repository.save({...data, userId: userId });
    }
 }

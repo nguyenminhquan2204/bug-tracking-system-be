@@ -6,6 +6,9 @@ import { FileController } from './file.controller';
 import { FileService } from './file.service';
 import { UPLOAD_DIR } from 'src/shared/constants/other.constant';
 import { generateRandomFileName } from 'src/shared/helpers/helper';
+import { FileRepo } from './file.repo';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { File } from 'src/database/entities/file.entity';
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -21,10 +24,12 @@ const storage = multer.diskStorage({
   imports: [
     MulterModule.register({
       storage
-    })
+    }),
+    TypeOrmModule.forFeature([File])
   ],
   controllers: [FileController],
-  providers: [FileService]
+  providers: [FileService, FileRepo],
+  exports: [FileRepo, FileService]
 })
 export class FileModule {
   constructor() {

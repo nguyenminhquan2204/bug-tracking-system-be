@@ -86,6 +86,31 @@ export class S3Service {
     return parallelUploads3.done()
   }
 
+  uploadedFileFromFormData({
+    filename,
+    buffer,
+    contentType
+  }: {
+    filename: string;
+    buffer: Buffer;
+    contentType: string;
+  }) {
+    const parallelUploads3 = new Upload({
+      client: this.s3,
+      params: {
+        Bucket: envConfig.S3_BUCKET_NAME,
+        Key: filename,
+        Body: buffer,
+        ContentType: contentType,
+      },
+      queueSize: 4,
+      partSize: 1024 * 1024 * 5,
+      leavePartsOnError: false,
+    })
+
+    return parallelUploads3.done()
+  }
+
   createPresignedUrlWithClient(filename: string) {
     const contentType = mime.lookup(filename) || 'application/octet-stream'
     const command = new PutObjectCommand({ Bucket: envConfig.S3_BUCKET_NAME, Key: filename, ContentType: contentType })

@@ -60,7 +60,17 @@ export class BugRepo {
    }
 
    async getBugBugId(bugId: number): Promise<BugType | null> {
-      return await this.repository.findOneBy({ id: bugId });
+      return await this.repository.findOne({
+         where: { id: bugId },
+         relations: {
+            comments: {
+               user: true,
+               attachments: {
+                  file: true
+               }
+            }
+         }
+      });
    }
 
    async create(body: CreateBugBodyType): Promise<BugType> {

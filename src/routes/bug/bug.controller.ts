@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { BugService } from './bug.service';
 import { CreateBugBodyDTO, GetBugsQueryBodyDTO, UpdateBugBodyDTO, UpdateBugPriorityParamsDTO, UpdateBugStatusParamsDTO } from './dtos/bug.dto';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
@@ -6,6 +6,7 @@ import { ZodValidationPipe } from 'src/shared/common/pipes/zod-validation.pipe';
 import { UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from './models/bug.model';
 import { ActiveUser } from 'src/shared/common/decorators/active-user.decorator';
 import { CreateBugCommentDTO } from './dtos/bug-comment.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('bug')
 export class BugController {
@@ -40,8 +41,9 @@ export class BugController {
    }
 
    @Post(':bugId')
-   async createComment(@ActiveUser('userId') userId: number, @Param('bugId', ParseIntPipe) bugId: number, @Body() body: CreateBugCommentDTO) {
-      const response = await this.bugService.postCreateComment(userId, { ...body, bugId });
+   @UseInterceptors(FilesInterceptor('files'))
+   async createComment(@ActiveUser('userId') userId: number, @Param('bugId', ParseIntPipe) bugId: number, @Body() body: CreateBugCommentDTO, @UploadedFiles() files: Express.Multer.File[]) {
+      const response = await this.bugService.postCreateComment(userId, { ...body, bugId, files });
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
