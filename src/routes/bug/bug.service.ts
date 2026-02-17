@@ -3,10 +3,10 @@ import { BugRepo } from './repos/bug.repo';
 import { CreateBugBodyType, GetBugsQueryBodyType, UpdateBugBodyType } from './models/bug.model';
 import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
 import { BugCommentRepo } from './repos/bug-comment.repo';
-import { S3Service } from 'src/shared/services/s3.service';
 import { BugAttachmentRepo } from './repos/bug-attachment.repo';
 import { FileRepo } from '../file/file.repo';
 import { FileService } from '../file/file.service';
+import { BugHistoryRepo } from './repos/bug-history.repo';
 
 @Injectable()
 export class BugService {
@@ -14,6 +14,7 @@ export class BugService {
       private readonly bugRepo: BugRepo,
       private readonly bugCommentRepo: BugCommentRepo,
       private readonly bugAttachmentRepo: BugAttachmentRepo,
+      private readonly bugHistoryRepo: BugHistoryRepo,
       private readonly fileRepo: FileRepo,
       private readonly fileService: FileService
    ) {}
@@ -64,6 +65,12 @@ export class BugService {
       const bug = await this.bugRepo.getBugBugId(bugId);
       if(!bug) throw new NotFoundException('Bug not found')
       return bug;
+   }
+
+   async getBugHistoryById(bugId: number) {
+      const bug = await this.bugRepo.getBugBugId(bugId);
+      if(!bug) throw new NotFoundException('Bug not found');
+      return await this.bugHistoryRepo.getBugHistoryById(bugId);
    }
 
    async create(body: CreateBugBodyType) {

@@ -14,4 +14,11 @@ export class BugHistoryRepo {
    async create(data: CreateBugHistoryType) {
       return await this.repository.save(data);
    }
+
+   async getBugHistoryById(bugId: number) {
+      return await this.repository.find({ 
+         where: { bugId: bugId },
+         relations: { updatedByUser: true }
+      })
+   }
 }

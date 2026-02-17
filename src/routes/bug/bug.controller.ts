@@ -30,6 +30,12 @@ export class BugController {
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
+   @Get('/history/:bugId')
+   async getBugHistoryById(@Param('bugId', ParseIntPipe) bugId: number) {
+      const response = await this.bugService.getBugHistoryById(bugId);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
    @Post()
    async create(@ActiveUser('userId') userId: number, @Body() body: CreateBugBodyDTO) {
       const data = {
