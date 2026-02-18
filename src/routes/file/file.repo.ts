@@ -13,4 +13,8 @@ export class FileRepo {
    async createMany(data: any) {
       return await this.repository.save(data);
    }
+
+   async create(data: any) {
+      return await this.repository.save(data);
+   }
 }

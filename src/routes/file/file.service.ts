@@ -29,12 +29,24 @@ export class FileService {
       };
    }
 
-   async uploadFileFromFormData(file: Express.Multer.File) {
+   async uploadFileFromFormData(file: Express.Multer.File, save?: boolean) {
       const res = await this.s3Service.uploadedFileFromFormData({
          filename: 'images/' + file.originalname,
          buffer: file.buffer,
          contentType: file.mimetype
       });
+
+      let saveFile: any;
+      if(save) {
+         const saveFile = await this.fileRepo.create({
+            name: file.originalname,
+            type: file.mimetype,
+            size: file.size,
+            path: res.Location
+         })
+
+         return saveFile;
+      }
 
       return {
          data: {
@@ -42,7 +54,7 @@ export class FileService {
             fileName: file.originalname,
             fileType: file.mimetype,
             size: file.size
-         },
+         }
       };
    }
 

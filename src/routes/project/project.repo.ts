@@ -27,6 +27,7 @@ export class ProjectRepo {
       const qb = this.repository
          .createQueryBuilder('project')
          .leftJoinAndSelect('project.managerUserInfo', 'manager')
+         .loadRelationCountAndMap('project.bugCount', 'project.bugs')
          .orderBy('project.createdAt', 'DESC')
          .skip(skip)
          .take(limit);

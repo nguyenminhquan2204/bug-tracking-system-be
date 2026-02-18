@@ -4,6 +4,7 @@ import { CreateUserBodyType, GetUsersQueryType, UpdateUserBodyType } from './use
 import { HasingService } from 'src/shared/services/hasing.service';
 import { isPostgresUniqueError } from 'src/shared/helpers/error';
 import { RoleService } from '../role/role.service';
+import { UpdateProfileType } from '../profile/profile.model';
 
 @Injectable()
 export class UserService {
@@ -52,6 +53,10 @@ export class UserService {
   }
 
   async update(userId: number, payload: UpdateUserBodyType) {
+    return await this.userRepo.update(userId, payload);
+  }
+
+  async updateProfile(userId: number, payload: UpdateProfileType) {
     return await this.userRepo.update(userId, payload);
   }
 

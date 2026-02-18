@@ -2,6 +2,7 @@
 import { BaseEntity } from './base.entity';
 import { Role } from './role.entity';
 import { Token } from './token.entity';
+import { File } from './file.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -23,6 +24,10 @@ export class User extends BaseEntity {
 
   @Column({ name: 'imageId', nullable: true })
   imageId?: number;
+
+  @ManyToOne(() => File, { nullable: true })
+  @JoinColumn({ name: 'imageId' })
+  avatar?: File;
 
   @OneToMany(() => Token, (token) => token.user)
   tokens: Token[];

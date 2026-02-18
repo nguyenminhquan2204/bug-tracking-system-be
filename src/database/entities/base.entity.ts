@@ -4,10 +4,7 @@ import {
   UpdateDateColumn,
   Column,
   DeleteDateColumn,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn()
@@ -30,10 +27,6 @@ export abstract class BaseEntity {
 
   @Column({ type: 'int', nullable: true })
   updatedBy?: number;
-
-  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'updatedBy' })
-  updatedByUser?: User;
 
   @Column({ type: 'int', nullable: true })
   deletedBy?: number;

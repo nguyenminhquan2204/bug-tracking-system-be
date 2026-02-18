@@ -59,7 +59,7 @@ export class UserRepo {
     }
   }
 
-  async update(userId: number, payload: UpdateUserBodyType){
+  async update(userId: number, payload: any){
     const user = await this.repository.preload({
       id: userId,
       ...payload
@@ -73,7 +73,10 @@ export class UserRepo {
   }
 
   async getUserById(userId: number): Promise<User> {
-    const user = await this.repository.findOneBy({ id: userId });
+    const user = await this.repository.findOne({
+      where: { id: userId },
+      relations: { avatar: true }
+    });
     
     if(!user) throw UserNotFound;
 
