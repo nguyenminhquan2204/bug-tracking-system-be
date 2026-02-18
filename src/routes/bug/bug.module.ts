@@ -11,9 +11,10 @@ import { BugCommentRepo } from './repos/bug-comment.repo';
 import { BugAttachment } from 'src/database/entities/bug_attactment.entity';
 import { BugAttachmentRepo } from './repos/bug-attachment.repo';
 import { FileModule } from '../file/file.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Bug, BugHistory, BugComment, BugAttachment]), FileModule],
+  imports: [TypeOrmModule.forFeature([Bug, BugHistory, BugComment, BugAttachment]), FileModule, UserModule],
   controllers: [BugController],
   providers: [BugService, BugRepo, BugHistoryRepo, BugCommentRepo, BugAttachmentRepo]
 })

@@ -7,8 +7,9 @@ import { AccessTokenGuard } from './common/guards/access-token.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './common/guards/authentication.guard';
 import { RoleModule } from 'src/routes/role/role.module';
+import { EmailService } from './services/email.service';
 
-const sharedServices = [HasingService, TokenService, S3Service];
+const sharedServices = [HasingService, TokenService, S3Service, EmailService];
 @Global()
 @Module({
   exports: [...sharedServices, AccessTokenGuard],

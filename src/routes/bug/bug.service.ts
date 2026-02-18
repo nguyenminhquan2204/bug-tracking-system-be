@@ -4,9 +4,10 @@ import { CreateBugBodyType, GetBugsQueryBodyType, UpdateBugBodyType } from './mo
 import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
 import { BugCommentRepo } from './repos/bug-comment.repo';
 import { BugAttachmentRepo } from './repos/bug-attachment.repo';
-import { FileRepo } from '../file/file.repo';
 import { FileService } from '../file/file.service';
 import { BugHistoryRepo } from './repos/bug-history.repo';
+import { UserService } from '../user/user.service';
+import { EmailService } from 'src/shared/services/email.service';
 
 @Injectable()
 export class BugService {
@@ -15,8 +16,9 @@ export class BugService {
       private readonly bugCommentRepo: BugCommentRepo,
       private readonly bugAttachmentRepo: BugAttachmentRepo,
       private readonly bugHistoryRepo: BugHistoryRepo,
-      private readonly fileRepo: FileRepo,
-      private readonly fileService: FileService
+      private readonly fileService: FileService,
+      private readonly userService: UserService,
+      private readonly emailService: EmailService
    ) {}
 
    list(query: GetBugsQueryBodyType) {
@@ -41,7 +43,7 @@ export class BugService {
          )
 
          // Create file
-         const createdFiles = await this.fileRepo.createMany(
+         const createdFiles = await this.fileService.createMany(
             uploadResults.map((upload: any, index: number) => ({
                name: files[index].originalname,
                path: upload.data.url,
@@ -74,13 +76,50 @@ export class BugService {
    }
 
    async create(body: CreateBugBodyType) {
+      // Repoter, Developer
+      const [reporter, developer] = await Promise.all([
+         this.userService.getUserById(body.reporterId),
+         this.userService.getUserById(body.developerId)
+      ])
+      if(!reporter || !developer) throw new NotFoundException('Reporter or developer not found. Plz check again');
+
+      // Create bug
       const bug = await this.bugRepo.create(body);
+
+      // Send email
+      await this.emailService.sendBugAssignedEmail({
+         email: developer.email,
+         userName: developer.userName,
+         bugId: bug.id,
+         bugTitle: bug.title,
+         priority: bug.priority,
+         assignedBy: reporter.userName,
+         bugUrl: ''
+      })
+
       return bug;
    }
 
    async update(changeById: number, bugId: number, body: UpdateBugBodyType) {
       const bug = await this.bugRepo.getBugBugId(bugId);
       if(!bug) throw new NotFoundException('Bug not found');
+
+      // Repoter, Developer
+      const [reporter, developer] = await Promise.all([
+         this.userService.getUserById(changeById),
+         this.userService.getUserById(body.developerId)
+      ])
+      if(!reporter || !developer) throw new NotFoundException('Reporter or developer not found. Plz check again');
+
+      // Send email
+      await this.emailService.sendBugResolvedEmail({
+         email: developer.email,
+         userName: developer.userName,
+         bugId: bugId,
+         bugTitle: bug.title,
+         fixedBy: reporter.userName,
+         bugUrl: ''
+      })
 
       return this.bugRepo.update(changeById, bugId, body);
    }
