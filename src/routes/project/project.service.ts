@@ -22,13 +22,7 @@ export class ProjectService {
    }
 
    async getDashboardAdmin(projectId: number) {
-      let data;
-      if(projectId === 0) {
-         data = await this.bugService.getDashboardAdminAll()
-      } else {
-
-      }
-      return data;
+      return await this.bugService.getDashboardAdmin(projectId);
    }
 
    async getProjectById(projectId: number) {

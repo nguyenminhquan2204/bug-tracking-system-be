@@ -30,8 +30,8 @@ export class BugService {
       return this.bugRepo.getAll(projectId);
    }
 
-   async getDashboardAdminAll() {
-      return await this.bugRepo.getDashboardAdminAll();
+   async getDashboardAdmin(projectId: number) {
+      return await this.bugRepo.getDashboardAdmin(projectId);
    }
 
    async postCreateComment(userId: number, data: any) {

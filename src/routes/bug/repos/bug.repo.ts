@@ -15,13 +15,17 @@ export class BugRepo {
       private readonly bugHistoryRepo: BugHistoryRepo
    ) {}
 
-   private async getSummaryStatus() {
-      const result = await this.repository
+   private async getSummaryStatus(projectId?: number) {
+      const qb = this.repository
          .createQueryBuilder('bug')
          .select('bug.status', 'status')
-         .addSelect('COUNT(bug.id)', 'count')
-         .groupBy('bug.status')
-         .getRawMany();
+         .addSelect('COUNT(bug.id)', 'count');
+      
+      if(projectId) {
+         qb.andWhere('bug.projectId = :projectId', { projectId });
+      }
+
+      const result = await qb.groupBy('bug.status').getRawMany();
 
       const summaryStatus = {
          TOTAL: 0,
@@ -56,11 +60,11 @@ export class BugRepo {
       return { summaryStatus, fullStatus };
    }
 
-   private async getTrend7Days() {
+   private async getTrend7Days(projectId?: number) {
       const today = startOfDay(new Date());
       const sevenDaysAgo = startOfDay(subDays(today, 7));
 
-      const trendRaw = await this.repository
+      const qb = this.repository
          .createQueryBuilder('bug')
          .select(`TO_CHAR(bug."createdAt", 'YYYY-MM-DD')`, 'date')
          .addSelect(`COUNT(bug.id)`, 'created')
@@ -71,7 +75,13 @@ export class BugRepo {
          `, 'resolved')
          .where('bug."createdAt" >= :sevenDaysAgo', { sevenDaysAgo })
          .andWhere('bug."createdAt" < :today', { today })
-         .setParameter('doneStatus', BugStatus.DONE_IN_DEV)
+         .setParameter('doneStatus', BugStatus.DONE_IN_DEV);
+
+      if (projectId) {
+         qb.andWhere('bug.projectId = :projectId', { projectId });
+      }
+
+      const trendRaw = await qb
          .groupBy(`TO_CHAR(bug."createdAt", 'YYYY-MM-DD')`)
          .orderBy(`TO_CHAR(bug."createdAt", 'YYYY-MM-DD')`, 'ASC')
          .getRawMany();
@@ -103,7 +113,11 @@ export class BugRepo {
       return result;
    }
 
-   private async getTop4ProjectsByOpenBug() {
+   private async getTop4ProjectsByOpenBug(projectId?: number) {
+      if (projectId) {
+         return [];
+      }
+
       const result = await this.repository
          .createQueryBuilder('bug')
          .leftJoin('bug.project', 'project')
@@ -121,13 +135,19 @@ export class BugRepo {
       }));
    }
 
-   private async getTop3UsersWithMostOpenBugs() {
-      const result = await this.repository
+   private async getTop3UsersWithMostOpenBugs(projectId?: number) {
+      const qb = this.repository
          .createQueryBuilder('bug')
          .leftJoin('bug.developer', 'user')
          .select('user.id', 'userId')
          .addSelect('user.userName', 'name')
-         .addSelect('COUNT(bug.id)', 'open')
+         .addSelect('COUNT(bug.id)', 'open');
+
+      if (projectId) {
+         qb.andWhere('bug.projectId = :projectId', { projectId });
+      }
+
+      const result = await qb
          .groupBy('user.id')
          .addGroupBy('user.userName')
          .orderBy('COUNT(bug.id)', 'DESC')
@@ -141,12 +161,53 @@ export class BugRepo {
       }));
    }
 
+   private async getDetailStatusByProjectId(projectId: number) {
+      const result = await this.repository
+         .createQueryBuilder('bug')
+         .select('bug.priority', 'priority')
+         .addSelect('COUNT(bug.id)', 'count')
+         .where('bug.projectId = :projectId', { projectId })
+         .groupBy('bug.priority')
+         .getRawMany();
+
+      return result.map(item => ({
+         name: item.priority,
+         open: Number(item.count),
+   }));
+   }
+
    async getDashboardAdminAll() {
       const [summaryData, trend7Days, top4ProjectByOpenBug, top3UserWithOpenBugs] = await Promise.all([
          this.getSummaryStatus(),
          this.getTrend7Days(),
          this.getTop4ProjectsByOpenBug(),
          this.getTop3UsersWithMostOpenBugs()
+      ]);
+
+      return {
+         summaryStatus: summaryData.summaryStatus,
+         fullStatus: summaryData.fullStatus,
+         trend7Days,
+         top4ProjectByOpenBug,
+         top3UserWithOpenBugs
+      };
+   }
+
+   async getDashboardAdmin(projectId: number) {
+      if (projectId === 0) {
+         return this.getDashboardAdminAll();
+      }
+
+      const [
+         summaryData,
+         trend7Days,
+         top4ProjectByOpenBug,
+         top3UserWithOpenBugs
+      ] = await Promise.all([
+         this.getSummaryStatus(projectId),
+         this.getTrend7Days(projectId),
+         this.getDetailStatusByProjectId(projectId),
+         this.getTop3UsersWithMostOpenBugs(projectId)
       ]);
 
       return {
