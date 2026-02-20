@@ -219,6 +219,28 @@ export class BugRepo {
       };
    }
 
+   async getDashboardTester(projectId: number) {
+      const [
+         summaryData,
+         trend7Days,
+         top4ProjectByOpenBug,
+         top3UserWithOpenBugs
+      ] = await Promise.all([
+         this.getSummaryStatus(projectId),
+         this.getTrend7Days(projectId),
+         this.getDetailStatusByProjectId(projectId),
+         this.getTop3UsersWithMostOpenBugs(projectId)
+      ]);
+
+      return {
+         summaryStatus: summaryData.summaryStatus,
+         fullStatus: summaryData.fullStatus,
+         trend7Days,
+         top4ProjectByOpenBug,
+         top3UserWithOpenBugs
+      };
+   }
+
    async list(query: GetBugsQueryBodyType): Promise<GetBugsResType> {
    const { limit, page } = query;
       const skip = (page - 1) * limit;

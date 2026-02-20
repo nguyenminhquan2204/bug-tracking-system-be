@@ -25,6 +25,10 @@ export class ProjectService {
       return await this.bugService.getDashboardAdmin(projectId);
    }
 
+   async getDashboardTester(projectId: number) {
+      return await this.bugService.getDashboardTester(projectId);
+   }
+
    async getProjectById(projectId: number) {
       const project = await this.projectRepo.getProjectById(projectId);
       if(!project) throw new NotFoundException('Project not found');

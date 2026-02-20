@@ -34,6 +34,10 @@ export class BugService {
       return await this.bugRepo.getDashboardAdmin(projectId);
    }
 
+   async getDashboardTester(projectId: number) {
+      return await this.bugRepo.getDashboardTester(projectId);
+   }
+
    async postCreateComment(userId: number, data: any) {
       const { bugId, content, files } = data;
       // Create comment
