@@ -2,17 +2,33 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProjectRepo } from './project.repo';
 import { CreateProjectBodyType, GetProjectsQueryBodyType, UpdateProjectBodyType } from './project.model';
 import { ProjectMemberService } from '../project-member/project-member.service';
+import { BugService } from '../bug/bug.service';
 
 @Injectable()
 export class ProjectService {
    constructor(
       private readonly projectRepo: ProjectRepo,
-      private readonly projectMemberService: ProjectMemberService
+      private readonly projectMemberService: ProjectMemberService,
+      private readonly bugService: BugService
    ) {}
 
 
    list(query: GetProjectsQueryBodyType) {
       return this.projectRepo.list(query);
+   }
+
+   getAllProject() {
+      return this.projectRepo.getAllProject();
+   }
+
+   async getDashboardAdmin(projectId: number) {
+      let data;
+      if(projectId === 0) {
+         data = await this.bugService.getDashboardAdminAll()
+      } else {
+
+      }
+      return data;
    }
 
    async getProjectById(projectId: number) {

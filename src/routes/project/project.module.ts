@@ -6,9 +6,10 @@ import { Project } from 'src/database/entities/project.entity';
 import { ProjectController } from './controlers/project.controller';
 import { ProjectPublicController } from './controlers/project-public.controller';
 import { ProjectMemberModule } from '../project-member/project-member.module';
+import { BugModule } from '../bug/bug.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Project]), ProjectMemberModule],
+  imports: [TypeOrmModule.forFeature([Project]), ProjectMemberModule, BugModule],
   controllers: [ProjectController, ProjectPublicController],
   providers: [ProjectService, ProjectRepo]
 })

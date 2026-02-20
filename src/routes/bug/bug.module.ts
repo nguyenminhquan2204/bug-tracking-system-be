@@ -16,6 +16,7 @@ import { UserModule } from '../user/user.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Bug, BugHistory, BugComment, BugAttachment]), FileModule, UserModule],
   controllers: [BugController],
-  providers: [BugService, BugRepo, BugHistoryRepo, BugCommentRepo, BugAttachmentRepo]
+  providers: [BugService, BugRepo, BugHistoryRepo, BugCommentRepo, BugAttachmentRepo],
+  exports: [BugService]
 })
 export class BugModule {}

@@ -13,6 +13,18 @@ export class ProjectController {
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
+   @Get('all')
+   async getAll() {
+      const response = await this.projectService.getAllProject();
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
+   @Get('dashboard/:projectId')
+   async getDashboardAdmin(@Param('projectId', ParseIntPipe) projectId: number) {
+      const response = await this.projectService.getDashboardAdmin(projectId);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
    @Get(':projectId')
    async getProjectById(@Param('projectId', ParseIntPipe) projectId: number) {
       const response = await this.projectService.getProjectById(projectId);

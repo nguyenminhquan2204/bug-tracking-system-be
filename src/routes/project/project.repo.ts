@@ -71,6 +71,10 @@ export class ProjectRepo {
       };
    }
 
+   async getAllProject() {
+      return await this.repository.find();
+   }
+
    async getProjectById(projectId: number): Promise<ProjectType | null> {
       return await this.repository.findOneBy({ id: projectId })
    }
