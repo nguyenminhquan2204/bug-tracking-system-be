@@ -64,8 +64,13 @@ export const UpdateBugPriorityParamsSchema = BugSchema.pick({
    priority: true
 })
 
+export const BugGetListQuerySchema = z.object({
+   search: z.string().optional(),
+})
+
 export type BugType = z.infer<typeof BugSchema>;
 export type CreateBugBodyType = z.infer<typeof CreateBugBodySchema>;
 export type UpdateBugBodyType = z.infer<typeof UpdateBugBodySchema>;
 export type GetBugsQueryBodyType = z.infer<typeof GetBugsQueryBodySchema>;
 export type GetBugsResType = z.infer<typeof GetBugsResSchema>;
+export type BuggetListQueryType = z.infer<typeof BugGetListQuerySchema>;

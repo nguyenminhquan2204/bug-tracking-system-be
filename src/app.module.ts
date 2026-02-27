@@ -12,10 +12,39 @@ import { PermissionModule } from './routes/permission/permission.module';
 import { ProfileModule } from './routes/profile/profile.module';
 import { ProjectMemberModule } from './routes/project-member/project-member.module';
 import { FileModule } from './routes/file/file.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerBehindProxyGuard } from './shared/common/guards/throller-behind-proxy.guard';
 
 @Module({
-  imports: [DatabaseModule, SharedModule, UserModule, RoleModule, ProjectModule, BugModule, AuthModule, PermissionModule, ProfileModule, ProjectMemberModule, FileModule],
+  imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60 * 1000,
+          limit: 30
+        }
+      ]
+    }),
+    DatabaseModule, 
+    SharedModule, 
+    UserModule, 
+    RoleModule, 
+    ProjectModule, 
+    BugModule, 
+    AuthModule, 
+    PermissionModule, 
+    ProfileModule, 
+    ProjectMemberModule, 
+    FileModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerBehindProxyGuard
+    },
+  ],
 })
 export class AppModule {}

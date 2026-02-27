@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Bug } from 'src/database/entities/bug.entity';
 import { BugType, CreateBugBodyType, GetBugsQueryBodyType, GetBugsResType, UpdateBugBodyType } from '../models/bug.model';
 import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
@@ -261,29 +261,61 @@ export class BugRepo {
       }
    }
 
-   async getAll(projectId: number) {
-      const [todo, doing, prInReview, merged, readyForQc, qcInProgress, doneInDev, onStg] = await Promise.all([
-         this.repository.find({ where: { status: BugStatus.TODO, projectId }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.DOING, projectId }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.PR_IN_REVIEW, projectId }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.MERGED, projectId }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.READY_FOR_QC, projectId }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.QC_IN_PROGRESS, projectId }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.DONE_IN_DEV, projectId }, relations: { developer: true, reporter: true }}),
-         this.repository.find({ where: { status: BugStatus.ON_STG, projectId }, relations: { developer: true, reporter: true }}),
-      ])
-      return {
-         bugs: {
-            todo: todo,
-            doing: doing,
-            pr_in_review: prInReview,
-            merged: merged,
-            ready_for_qc: readyForQc,
-            qc_in_progress: qcInProgress,
-            done_in_dev: doneInDev,
-            on_stg: onStg
+   async getAll(projectId: number, search?: string) {
+      const whereCondition: any = {
+         projectId
+      }
+
+      if (search) {
+         whereCondition.title = ILike(`%${search}%`)
+      }
+
+      const bugs = await this.repository.find({
+         where: whereCondition,
+         relations: { developer: true, reporter: true }
+      })
+
+      const grouped: any = {
+         todo: [],
+         doing: [],
+         pr_in_review: [],
+         merged: [],
+         ready_for_qc: [],
+         qc_in_progress: [],
+         done_in_dev: [],
+         on_stg: []
+      }
+
+      for (const bug of bugs) {
+         switch (bug.status) {
+            case BugStatus.TODO:
+               grouped.todo.push(bug)
+               break;
+            case BugStatus.DOING:
+               grouped.doing.push(bug)
+               break;
+            case BugStatus.PR_IN_REVIEW:
+               grouped.pr_in_review.push(bug)
+               break;
+            case BugStatus.MERGED:
+               grouped.merged.push(bug)
+               break;
+            case BugStatus.READY_FOR_QC:
+               grouped.ready_for_qc.push(bug)
+               break;
+            case BugStatus.QC_IN_PROGRESS:
+               grouped.qc_in_progress.push(bug)
+               break;
+            case BugStatus.DONE_IN_DEV:
+               grouped.done_in_dev.push(bug)
+               break;
+            case BugStatus.ON_STG:
+               grouped.on_stg.push(bug)
+               break;
          }
       }
+
+      return { bugs: grouped }
    }
 
    async getBugBugId(bugId: number): Promise<BugType | null> {

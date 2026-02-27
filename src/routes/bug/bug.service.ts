@@ -26,8 +26,8 @@ export class BugService {
    }
 
 
-   getAll(projectId: number) {
-      return this.bugRepo.getAll(projectId);
+   getAll(projectId: number, search?: string) {
+      return this.bugRepo.getAll(projectId, search);
    }
 
    async getDashboardAdmin(projectId: number) {

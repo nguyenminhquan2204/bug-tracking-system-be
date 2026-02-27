@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query 
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
 import { ProjectService } from '../project.service';
 import { CreateProjectBodyDTO, GetProjectsQueryBodyDTO, UpdateProjectBodyDTO } from '../project.dto';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('project')
 export class ProjectController {
    constructor(private readonly projectService: ProjectService) {}

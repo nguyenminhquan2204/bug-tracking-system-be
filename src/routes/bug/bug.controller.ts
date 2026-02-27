@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { BugService } from './bug.service';
-import { CreateBugBodyDTO, GetBugsQueryBodyDTO, UpdateBugBodyDTO, UpdateBugPriorityParamsDTO, UpdateBugStatusParamsDTO } from './dtos/bug.dto';
+import { BugGetListQueryDTO, CreateBugBodyDTO, GetBugsQueryBodyDTO, UpdateBugBodyDTO, UpdateBugPriorityParamsDTO, UpdateBugStatusParamsDTO } from './dtos/bug.dto';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
 import { ZodValidationPipe } from 'src/shared/common/pipes/zod-validation.pipe';
 import { UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from './models/bug.model';
@@ -19,8 +19,8 @@ export class BugController {
    }
 
    @Get('all/:projectId')
-   async getAll(@Param('projectId', ParseIntPipe) projectId: number) {
-      const response = await this.bugService.getAll(projectId)
+   async getAll(@Param('projectId', ParseIntPipe) projectId: number, @Query() query: BugGetListQueryDTO) {
+      const response = await this.bugService.getAll(projectId, query?.search);
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
