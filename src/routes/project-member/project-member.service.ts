@@ -33,4 +33,12 @@ export class ProjectMemberService {
    validProjectWithUserId(userId: number, projectId: number) {
       return this.projectMemberRepo.findByUserIdAndProjectId(userId, projectId);
    }
+
+   async getUsersChat(userId: number) {
+      const projects = await this.getMyProject(userId);
+      if(projects.length === 0) return [];
+      const projectIds = projects.map((p) => p.projectId);
+
+      return this.projectMemberRepo.getUsersChat(projectIds);
+   }
 }

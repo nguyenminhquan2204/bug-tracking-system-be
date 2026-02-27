@@ -15,6 +15,7 @@ import { FileModule } from './routes/file/file.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerBehindProxyGuard } from './shared/common/guards/throller-behind-proxy.guard';
+import { WebsocketModule } from './websockets/websocket.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ThrottlerBehindProxyGuard } from './shared/common/guards/throller-behin
         }
       ]
     }),
+    WebsocketModule,
     DatabaseModule, 
     SharedModule, 
     UserModule, 

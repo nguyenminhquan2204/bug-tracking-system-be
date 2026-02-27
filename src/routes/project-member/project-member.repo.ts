@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ProjectMember } from "src/database/entities/project_member.entity";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { AddMembersType } from "./project-member.model";
 
 @Injectable()
@@ -110,5 +110,19 @@ export class ProjectMemberRepo {
             projectId: projectId
          }
       })
+   }
+
+   async getUsersChat(projectIds: number[]) {
+      return await this.repository
+         .createQueryBuilder('pm')
+         .leftJoin('pm.user', 'user')
+         .where('pm.projectId IN (:...projectIds)', { projectIds })
+         .select([
+            'user.id AS id',
+            'user.userName AS userName',
+            'user.email AS email',
+         ])
+         .distinct(true)
+         .getRawMany();
    }
 }

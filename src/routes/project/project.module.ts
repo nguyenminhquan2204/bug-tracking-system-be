@@ -7,10 +7,14 @@ import { ProjectController } from './controlers/project.controller';
 import { ProjectPublicController } from './controlers/project-public.controller';
 import { ProjectMemberModule } from '../project-member/project-member.module';
 import { BugModule } from '../bug/bug.module';
+import { ChatRepo } from './repos/chat.repo';
+import { Conversation } from 'src/database/entities/conversation.entity';
+import { ConversationParticipant } from 'src/database/entities/conversation-participant.entity';
+import { ChatService } from './services/chat.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Project]), ProjectMemberModule, BugModule],
+  imports: [TypeOrmModule.forFeature([Project, Conversation, ConversationParticipant]), ProjectMemberModule, BugModule],
   controllers: [ProjectController, ProjectPublicController],
-  providers: [ProjectService, ProjectRepo]
+  providers: [ProjectService, ProjectRepo, ChatService, ChatRepo]
 })
 export class ProjectModule {}

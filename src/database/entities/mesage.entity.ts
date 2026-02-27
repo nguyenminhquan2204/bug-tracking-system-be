@@ -6,11 +6,11 @@ export class Message {
   id: number;
 
   @Column()
-  senderId: number;
+  conversationId: number; 
 
   @Column()
-  receiverId: number;
-
+  senderId: number;
+  
   @Column('text')
   content: string;
 
