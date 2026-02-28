@@ -112,11 +112,12 @@ export class ProjectMemberRepo {
       })
    }
 
-   async getUsersChat(projectIds: number[]) {
+   async getUsersChat(projectIds: number[], userId: number) {
       return await this.repository
          .createQueryBuilder('pm')
          .leftJoin('pm.user', 'user')
          .where('pm.projectId IN (:...projectIds)', { projectIds })
+         .andWhere('user.id != :userId', { userId })
          .select([
             'user.id AS id',
             'user.userName AS userName',

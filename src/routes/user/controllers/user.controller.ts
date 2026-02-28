@@ -7,25 +7,22 @@ import {
 } from 'src/shared/helpers/response';
 import { CreateUserBodyDTO, GetUsersQueryDTO, GetUsersResDTO, UpdateUserBodyDTO } from '../user.dto';
 import { ZodSerializerDto } from 'nestjs-zod';
+import { ActiveUser } from 'src/shared/common/decorators/active-user.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async createUser(@Body() body: CreateUserBodyDTO) {
-    const response = await this.userService.create(body);
-    return new SuccessResponse(
-      response,
-      DEFAULT_SUCCESS_MESSAGE,
-      HttpStatus.OK,
-    );
-  }
-
   @Get()
   @ZodSerializerDto(GetUsersResDTO)
   async list(@Query() query: GetUsersQueryDTO) {
     const response = await this.userService.list(query);
+    return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+  }
+
+  @Get('chat-admin')
+  async getUsersForChatAdmin(@ActiveUser('userId', ParseIntPipe) userId: number) {
+    const response = await this.userService.getUsersForChatAdmin(userId);
     return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
   }
 
@@ -67,6 +64,16 @@ export class UserController {
   async getUserById(@Param('userId', ParseIntPipe) userId: number) {
     const response = await this.userService.getUserById(userId);
     return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+  }
+
+  @Post()
+  async createUser(@Body() body: CreateUserBodyDTO) {
+    const response = await this.userService.create(body);
+    return new SuccessResponse(
+      response,
+      DEFAULT_SUCCESS_MESSAGE,
+      HttpStatus.OK,
+    );
   }
 
   @Patch(':userId')

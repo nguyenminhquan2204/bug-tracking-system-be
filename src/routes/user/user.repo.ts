@@ -99,4 +99,36 @@ export class UserRepo {
       }
     })
   }
+
+  async getAdminsChat(roleAdminId: number) {
+    return await this.repository
+      .createQueryBuilder('user')
+      .select([
+        'user.id AS id',
+        'user.userName AS username',
+        'user.email AS email'
+      ])
+      .where('user.roleId = :roleAdminId', { roleAdminId })
+      .getRawMany();
+  }
+
+  async getUsersForChatAdmin(userId: number) {
+    const users = await this.repository
+      .createQueryBuilder('user')
+      .leftJoin('user.role', 'role')
+      .where('user.id != :userId', { userId })
+      .select([
+        'user.id as id', 
+        'user.userName as username', 
+        'user.email as email', 
+        'role.name as rolename'
+      ])
+      .getRawMany();
+
+    return users.reduce((acc, user) => {
+      if(!acc[user.rolename]) acc[user.rolename] = [];
+      acc[user.rolename].push(user);
+      return acc;
+    }, {} as Record<string, any>);
+  }
 }

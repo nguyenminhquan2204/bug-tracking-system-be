@@ -39,6 +39,6 @@ export class ProjectMemberService {
       if(projects.length === 0) return [];
       const projectIds = projects.map((p) => p.projectId);
 
-      return this.projectMemberRepo.getUsersChat(projectIds);
+      return this.projectMemberRepo.getUsersChat(projectIds, userId);
    }
 }

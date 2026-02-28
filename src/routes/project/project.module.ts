@@ -11,9 +11,10 @@ import { ChatRepo } from './repos/chat.repo';
 import { Conversation } from 'src/database/entities/conversation.entity';
 import { ConversationParticipant } from 'src/database/entities/conversation-participant.entity';
 import { ChatService } from './services/chat.service';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Project, Conversation, ConversationParticipant]), ProjectMemberModule, BugModule],
+  imports: [TypeOrmModule.forFeature([Project, Conversation, ConversationParticipant]), ProjectMemberModule, BugModule, UserModule],
   controllers: [ProjectController, ProjectPublicController],
   providers: [ProjectService, ProjectRepo, ChatService, ChatRepo]
 })

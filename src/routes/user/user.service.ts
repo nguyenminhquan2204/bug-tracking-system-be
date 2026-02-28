@@ -71,4 +71,14 @@ export class UserService {
   async getInfoUserByEmailIncludeRole(email: string) {
     return await this.userRepo.getInfoUserByEmailIncludeRole(email);
   }
+
+  async getUsersForChatAdmin(userId: number) {
+    return await this.userRepo.getUsersForChatAdmin(userId);
+  }
+
+  async getAdminsChat() {
+    const roleAdminId = await this.roleService.getIdRoleAdmin();
+    if(roleAdminId == null) return;
+    return await this.userRepo.getAdminsChat(roleAdminId);
+  }
 }

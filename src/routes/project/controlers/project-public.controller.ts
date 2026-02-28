@@ -5,6 +5,7 @@ import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared
 import { ProjectMemberService } from 'src/routes/project-member/project-member.service';
 import { ChatService } from '../services/chat.service';
 import { MessageService } from 'src/shared/services/message.service';
+import { UserService } from 'src/routes/user/user.service';
 
 @Controller('project-public')
 export class ProjectPublicController {
@@ -12,7 +13,8 @@ export class ProjectPublicController {
       private readonly projectService: ProjectService,
       private readonly projectMemberService: ProjectMemberService,
       private readonly chatService: ChatService,
-      private readonly messageService: MessageService
+      private readonly messageService: MessageService,
+      private readonly userService: UserService
    ) {}
 
    @Get()
@@ -28,6 +30,12 @@ export class ProjectPublicController {
    @Get('chat/users')
    async getUsersChat(@ActiveUser('userId') userId: number) {
       const response = await this.projectMemberService.getUsersChat(userId);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
+   @Get('chat/admins')
+   async getAdminsChat() {
+      const response = await this.userService.getAdminsChat();
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
