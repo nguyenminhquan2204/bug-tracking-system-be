@@ -21,10 +21,40 @@ export class BugService {
       private readonly emailService: EmailService
    ) {}
 
+   private async sendEmailToUsersMention(bugId: number, commentContent: string, userId: number, mentionIds: number[]) {
+      const uniqueMentionIds = [...new Set(mentionIds)].filter(
+         (id) => id !== userId
+      );
+
+      // Find information bug, user
+      const [bugDetail, userDetail, mentionedUsers] = await Promise.all([
+         this.getBugById(bugId),
+         this.userService.getUserById(userId),
+         this.userService.getUsersByIds(uniqueMentionIds)
+      ])
+      if (!bugDetail || !userDetail || !mentionedUsers?.length) return;
+
+      const validUsers = mentionedUsers.filter((u) => !!u.email);
+      if (!validUsers.length) return;
+
+      const emailPromises = validUsers.map((user) =>
+         this.emailService.sendBugCommentMention({
+            receiverName: user.userName,
+            receiverEmail: user.email,
+            actorName: userDetail.userName,
+            bugTitle: bugDetail.title,
+            commentContent,
+         }).catch((err) => {
+            console.error(`Send email failed to ${user.email}`, err);
+            return null;
+         })
+      );
+      await Promise.all(emailPromises);
+   }
+
    list(query: GetBugsQueryBodyType) {
       return this.bugRepo.list(query);
    }
-
 
    getAll(projectId: number, search?: string) {
       return this.bugRepo.getAll(projectId, search);
@@ -39,7 +69,11 @@ export class BugService {
    }
 
    async postCreateComment(userId: number, data: any) {
-      const { bugId, content, files } = data;
+      const { bugId, content, files, mentions } = data;
+
+      // Send email mentions
+      await this.sendEmailToUsersMention(bugId, content, userId, mentions);
+
       // Create comment
       const comment = await this.bugCommentRepo.create(userId, { bugId, content });
       // Upload S3

@@ -17,6 +17,10 @@ export class ProjectService {
       return this.projectRepo.list(query);
    }
 
+   async getUsersMention(userId: number, projectId: number) {
+      await this.getProjectById(projectId);
+      return await this.projectMemberService.getUsersMention(userId, projectId);
+   }
    getAllProject() {
       return this.projectRepo.getAllProject();
    }

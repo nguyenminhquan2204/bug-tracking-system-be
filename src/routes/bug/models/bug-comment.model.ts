@@ -16,6 +16,19 @@ export const BugCommentSchema = z.object({
 
 export const CreateBugCommentSchema = BugCommentSchema.pick({
    content: true,
+}).extend({
+   mentions: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (!val) return []
+      try {
+         return JSON.parse(val)
+      } catch {
+         return []
+      }
+    })
+    .pipe(z.array(z.number())),
 }).strict()
 
 export type BugCommentType = z.infer<typeof BugCommentSchema>;

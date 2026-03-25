@@ -28,6 +28,7 @@ export class ProjectRepo {
          .createQueryBuilder('project')
          .leftJoinAndSelect('project.managerUserInfo', 'manager')
          .loadRelationCountAndMap('project.bugCount', 'project.bugs')
+         .loadRelationCountAndMap('project.memberCount', 'project.members')
          .orderBy('project.createdAt', 'DESC')
          .skip(skip)
          .take(limit);

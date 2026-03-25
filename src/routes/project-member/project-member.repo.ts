@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ProjectMember } from "src/database/entities/project_member.entity";
-import { In, Repository } from "typeorm";
+import { In, Not, Repository } from "typeorm";
 import { AddMembersType } from "./project-member.model";
 
 @Injectable()
@@ -10,6 +10,23 @@ export class ProjectMemberRepo {
       @InjectRepository(ProjectMember)
       private readonly repository: Repository<ProjectMember>
    ) {}
+
+   async getUsersMention(userId: number, projectId: number) {
+      const data = await this.repository.find({
+         where: { 
+            projectId: projectId,
+            user: { id: Not(userId) }
+         },
+         relations: {
+            user: true
+         }
+      })
+
+      return data.map(item => ({
+         id: item.user.id,
+         userName: item.user.userName
+      }))
+   }
 
    async addMembers(projectId: number, members: AddMembersType) {
       const data = members.map((m) => ({

@@ -64,6 +64,10 @@ export class UserService {
     return await this.userRepo.getUserById(userId);
   }
 
+  async getUsersByIds(Ids: number[]) {
+    return await this.userRepo.getUsersByIds(Ids);
+  }
+
   async deleteById(userId: number) {
     return await this.userRepo.deleteById(userId);
   }

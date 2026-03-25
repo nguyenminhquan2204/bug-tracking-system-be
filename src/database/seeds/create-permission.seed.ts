@@ -13,6 +13,13 @@ const TesterModule = [
    'FILE'
 ]
 
+const DeveloperModule = [
+   'PROJECT-PUBLIC',
+   'BUG',
+   'PROFILE',
+   'FILE'
+]
+
 export async function seedCreatePermission() {
    const app = await NestFactory.create(AppModule);
    // await app.listen(envConfig.PORT);
@@ -90,11 +97,12 @@ export async function seedCreatePermission() {
 
    const adminPermissionIds = updatedPermissionsInDb.map((item) => ({ id: item.id }))
    const testerPermissionIds = updatedPermissionsInDb.filter((item) => TesterModule.includes(item.module)).map((item) => ({ id: item.id }))
+   const developerPermissionIds = updatedPermissionsInDb.filter((item) => DeveloperModule.includes(item.module)).map((item) => ({ id: item.id }))
    
    await Promise.all([
       updateRole(adminPermissionIds, 'Admin'),
       updateRole(testerPermissionIds, 'Tester'),
-      // updateRole(clientPermissionIds, RoleName.Client)
+      updateRole(developerPermissionIds, 'Developer')
    ]);
 
    process.exit(0)

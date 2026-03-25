@@ -14,6 +14,11 @@ const bugResolvedTemplate = fs.readFileSync(
   { encoding: 'utf-8' }
 );
 
+const bugCommentMentionTemplate = fs.readFileSync(
+   path.resolve('src/shared/email-templates/bug-sendEmail-mention.html'),
+   { encoding: 'utf-8' }
+);
+
 @Injectable()
 export class EmailService {
    private resend: Resend;
@@ -26,6 +31,30 @@ export class EmailService {
       return Object.keys(data).reduce((html, key) => {
          return html.replaceAll(`{{${key}}}`, String(data[key] ?? ''));
       }, template);
+   }
+
+   async sendBugCommentMention(payload: {
+      receiverName: string;
+      receiverEmail: string;
+      actorName: string;
+      bugTitle: string;
+      commentContent: string
+   }) {
+      const subject = `Mention Notification for You`;
+
+      const html = this.renderTemplate(bugCommentMentionTemplate, {
+         receiverName: payload.receiverName,
+         actorName: payload.actorName,
+         bugTitle: payload.bugTitle,
+         commentContent: payload.commentContent
+      })
+
+      return this.resend.emails.send({
+         from: 'Mention Notification <no-reply@nguyenquandev.io.vn>',
+         to: [payload.receiverEmail],
+         subject,
+         html,
+      });
    }
 
    async sendBugAssignedEmail(payload: {

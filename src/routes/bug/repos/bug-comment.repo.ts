@@ -11,7 +11,7 @@ export class BugCommentRepo {
       private readonly repository: Repository<BugComment>,
    ) {}
 
-   async create(userId: number, data: CreateBugCommentType & { bugId: number }) {
+   async create(userId: number, data: Partial<CreateBugCommentType> & { bugId: number }) {
       return await this.repository.save({...data, userId: userId });
    }
 }

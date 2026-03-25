@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user.entity';
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { CreateUserBodyType, GetUsersQueryType, GetUsersResType, UpdateUserBodyType } from './user.model';
 import { UserNotFound } from './user.error';
 import { UserType } from 'src/shared/models/share-user.model';
@@ -81,6 +81,14 @@ export class UserRepo {
     if(!user) throw UserNotFound;
 
     return user;
+  }
+
+  async getUsersByIds(Ids: number[]) {
+    const users = await this.repository.find({
+      where: { id: In(Ids) },
+    });
+
+    return users;
   }
 
   async deleteById(userId: number, isHard?: boolean) {

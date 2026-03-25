@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>You were mentioned</title>
+</head>
+<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f6f8;">
+  <table width="100%" cellspacing="0" cellpadding="0" style="background-color:#f4f6f8; padding:20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellspacing="0" cellpadding="0" style="background:#ffffff; border-radius:8px; overflow:hidden;">
+          <tr>
+            <td style="background:#2563eb; color:#ffffff; padding:16px; font-size:18px; font-weight:bold;">
+              🔔 You were mentioned
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px; color:#333;">
+              <p style="margin:0 0 10px;">
+                Hi <strong>{{receiverName}}</strong>,
+              </p>
+              <p style="margin:0 0 15px;">
+                <strong>{{actorName}}</strong> mentioned you in a comment on:
+              </p>
+              <div style="padding:12px; background:#f1f5f9; border-radius:6px; margin-bottom:15px;">
+                <strong>{{bugTitle}}</strong>
+              </div>
+              <div style="border-left:4px solid #2563eb; padding:10px 12px; background:#f9fafb; border-radius:4px;">
+                {{commentContent}}
+              </div>
+              <div style="margin-top:20px;">
+                <a href="{{url}}" 
+                   style="display:inline-block; padding:10px 16px; background:#2563eb; color:#fff; text-decoration:none; border-radius:6px; font-size:14px;">
+                  View Comment
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:15px; text-align:center; font-size:12px; color:#888;">
+              This is an automated message from your Bug Tracking System.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

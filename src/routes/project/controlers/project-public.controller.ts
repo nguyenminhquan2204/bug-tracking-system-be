@@ -27,6 +27,12 @@ export class ProjectPublicController {
       }, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }
 
+   @Get(':projectId/mention')
+   async getUsersMention(@ActiveUser('userId') userId: number, @Param('projectId', ParseIntPipe) projectId: number) {
+      const response = await this.projectService.getUsersMention(userId, projectId);
+      return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+   }
+
    @Get('chat/users')
    async getUsersChat(@ActiveUser('userId') userId: number) {
       const response = await this.projectMemberService.getUsersChat(userId);

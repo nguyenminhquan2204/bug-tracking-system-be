@@ -7,6 +7,7 @@ import { UpdateBugPriorityParamsSchema, UpdateBugStatusParamsSchema } from './mo
 import { ActiveUser } from 'src/shared/common/decorators/active-user.decorator';
 import { CreateBugCommentDTO } from './dtos/bug-comment.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { CreateBugCommentSchema } from './models/bug-comment.model';
 
 @Controller('bug')
 export class BugController {
@@ -48,7 +49,7 @@ export class BugController {
 
    @Post(':bugId')
    @UseInterceptors(FilesInterceptor('files'))
-   async createComment(@ActiveUser('userId') userId: number, @Param('bugId', ParseIntPipe) bugId: number, @Body() body: CreateBugCommentDTO, @UploadedFiles() files: Express.Multer.File[]) {
+   async createComment(@ActiveUser('userId') userId: number, @Param('bugId', ParseIntPipe) bugId: number, @Body(new ZodValidationPipe(CreateBugCommentSchema)) body: CreateBugCommentDTO, @UploadedFiles() files: Express.Multer.File[]) {
       const response = await this.bugService.postCreateComment(userId, { ...body, bugId, files });
       return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
    }

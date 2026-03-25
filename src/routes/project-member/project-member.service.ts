@@ -10,6 +10,10 @@ export class ProjectMemberService {
       return this.projectMemberRepo.addMembers(projectId, members);
    }
 
+   getUsersMention(userId: number, projectId: number) {
+      return this.projectMemberRepo.getUsersMention(userId, projectId);
+   }
+
    members(projectId) {
       return this.projectMemberRepo.members(projectId)
    }
