@@ -15,3 +15,11 @@ export enum HttpMethod {
 export enum TokenType {
   REFRESH_TOKEN = 'REFRESH_TOKEN'
 }
+
+export enum NotificationType {
+  MENTION = 'MENTION',
+  COMMENT = 'COMMENT',
+  ASSIGN = 'ASSIGN',
+  SYSTEM = 'SYSTEM',
+  MESSAGE = 'MESSAGE'
+}

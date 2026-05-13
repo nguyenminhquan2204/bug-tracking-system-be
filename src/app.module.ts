@@ -16,6 +16,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerBehindProxyGuard } from './shared/common/guards/throller-behind-proxy.guard';
 import { WebsocketModule } from './websockets/websocket.module';
+import { AiModule } from './routes/ai/ai.module';
+import { NotificationModule } from './routes/notification/notification.module';
 
 @Module({
   imports: [
@@ -38,7 +40,7 @@ import { WebsocketModule } from './websockets/websocket.module';
     PermissionModule, 
     ProfileModule, 
     ProjectMemberModule, 
-    FileModule
+    FileModule, AiModule, NotificationModule
   ],
   controllers: [AppController],
   providers: [

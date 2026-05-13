@@ -10,14 +10,18 @@ const TesterModule = [
    'PROJECT-PUBLIC',
    'BUG',
    'PROFILE',
-   'FILE'
+   'FILE',
+   'AI',
+   'NOTIFICATION'
 ]
 
 const DeveloperModule = [
    'PROJECT-PUBLIC',
    'BUG',
    'PROFILE',
-   'FILE'
+   'FILE',
+   'AI',
+   'NOTIFICATION'
 ]
 
 export async function seedCreatePermission() {
