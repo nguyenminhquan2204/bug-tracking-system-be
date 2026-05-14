@@ -16,6 +16,7 @@ import { UserModule } from '../user/user.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Project, Conversation, ConversationParticipant]), ProjectMemberModule, BugModule, UserModule],
   controllers: [ProjectController, ProjectPublicController],
-  providers: [ProjectService, ProjectRepo, ChatService, ChatRepo]
+  providers: [ProjectService, ProjectRepo, ChatService, ChatRepo],
+  exports: [ProjectService, ProjectRepo],
 })
 export class ProjectModule {}

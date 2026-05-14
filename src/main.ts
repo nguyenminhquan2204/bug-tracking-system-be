@@ -5,7 +5,9 @@ import envConfig from './shared/config';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+      logger: ['error', 'warn'],
+  });
 
   const port = envConfig.PORT || 3000;
 

@@ -65,4 +65,10 @@ export class ProjectService {
       await this.getProjectById(projectId);
       return await this.projectMemberService.getDevelopersInProject(projectId);
    }
+
+   async getProjectsNearDeadline() {
+      const reminderDate = new Date();
+      reminderDate.setDate(reminderDate.getDate() + 3);
+      return await this.projectRepo.getProjectsNearDeadline(reminderDate);
+   }
 }

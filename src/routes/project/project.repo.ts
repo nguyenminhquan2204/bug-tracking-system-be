@@ -97,4 +97,22 @@ export class ProjectRepo {
       await this.repository.softDelete(projectId);
       return { message: 'Project deleted successfully' };
    }
+
+   async getProjectsNearDeadline(date: Date | null) {
+      if(!date) return[];
+
+      const now = new Date();
+
+      return await this.repository
+         .createQueryBuilder('project')
+         .leftJoinAndSelect('project.members', 'members')
+         .leftJoinAndSelect('members.user', 'userInfo')
+         .where('project.endDate BETWEEN :now AND :date', {
+            now,
+            date,
+         })
+         .andWhere('project.deletedAt IS NULL')
+         .orderBy('project.endDate', 'ASC')
+         .getMany();
+   }
 }

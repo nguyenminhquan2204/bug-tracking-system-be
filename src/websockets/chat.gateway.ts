@@ -65,7 +65,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect
       },
    ) {
 
-      console.log('Payload message: ', payload);
       // TODO: Save DB ở đây
       const [message, notification] = await Promise.all([
          this.messageService.createMessage(

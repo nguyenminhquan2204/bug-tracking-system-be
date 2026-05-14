@@ -19,6 +19,11 @@ const bugCommentMentionTemplate = fs.readFileSync(
    { encoding: 'utf-8' }
 );
 
+const projectDealineTemplate = fs.readFileSync(
+   path.resolve('src/shared/email-templates/project-deadline.html'),
+   { encoding: 'utf-8' }
+)
+
 @Injectable()
 export class EmailService {
    private resend: Resend;
@@ -101,6 +106,28 @@ export class EmailService {
          bugTitle: payload.bugTitle,
          fixedBy: payload.fixedBy,
          bugUrl: payload.bugUrl,
+      });
+
+      return this.resend.emails.send({
+         from: 'Bug Tracking System <no-reply@nguyenquandev.io.vn>',
+         to: [payload.email],
+         subject,
+         html,
+      });
+   }
+
+   async sendRemindNearProject(payload: {
+      projectName: string;
+      endDate: Date | string | null;
+      email: string;
+      userName: string;
+   }) {
+      const subject = `Reminder: Project Near Deadline`;
+      
+      const html = this.renderTemplate(projectDealineTemplate, {
+         userName: payload.userName,
+         projectName: payload.projectName,
+         deadline: payload.endDate,
       });
 
       return this.resend.emails.send({

@@ -18,6 +18,8 @@ import { ThrottlerBehindProxyGuard } from './shared/common/guards/throller-behin
 import { WebsocketModule } from './websockets/websocket.module';
 import { AiModule } from './routes/ai/ai.module';
 import { NotificationModule } from './routes/notification/notification.module';
+import { CronJobsModule } from './cron-jobs/cron-jobs.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -25,10 +27,12 @@ import { NotificationModule } from './routes/notification/notification.module';
       throttlers: [
         {
           ttl: 60 * 1000,
-          limit: 30
+          limit: 300
         }
       ]
     }),
+    ScheduleModule.forRoot(),
+    CronJobsModule,
     WebsocketModule,
     DatabaseModule, 
     SharedModule, 
