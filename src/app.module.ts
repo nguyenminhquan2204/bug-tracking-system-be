@@ -20,6 +20,7 @@ import { AiModule } from './routes/ai/ai.module';
 import { NotificationModule } from './routes/notification/notification.module';
 import { CronJobsModule } from './cron-jobs/cron-jobs.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ExpenseModule } from './routes/expense/expense.module';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     PermissionModule, 
     ProfileModule, 
     ProjectMemberModule, 
-    FileModule, AiModule, NotificationModule
+    FileModule, AiModule, NotificationModule, ExpenseModule
   ],
   controllers: [AppController],
   providers: [

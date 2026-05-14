@@ -4,6 +4,7 @@ import { BaseEntity } from './base.entity';
 import { ProjectStatus } from 'src/shared/constants/project.constant';
 import { ProjectMember } from './project_member.entity';
 import { Bug } from './bug.entity';
+import { Expense } from './expense.entity';
 
 @Entity('projects')
 export class Project extends BaseEntity {
@@ -38,4 +39,7 @@ export class Project extends BaseEntity {
 
   @OneToMany(() => ProjectMember, (member) => member.project)
   members: ProjectMember[];
+
+  @OneToMany(() => Expense, (expense) => expense.project)
+  expenses: Expense[];
 }
