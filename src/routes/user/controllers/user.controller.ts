@@ -20,6 +20,12 @@ export class UserController {
     return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
   }
 
+  @Get('list')
+  async getUsers() {
+    const response = await this.userService.getUsers();
+    return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
+  }
+
   @Get('chat-admin')
   async getUsersForChatAdmin(@ActiveUser('userId', ParseIntPipe) userId: number) {
     const response = await this.userService.getUsersForChatAdmin(userId);

@@ -13,6 +13,10 @@ export class UserRepo {
     private readonly repository: Repository<User>,
   ) {}
 
+  async getUsers() {
+    return await this.repository.find();
+  }
+
   async create(data: CreateUserBodyType) {
     const user = this.repository.create(data);
     return await this.repository.save(user);

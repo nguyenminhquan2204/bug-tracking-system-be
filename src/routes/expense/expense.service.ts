@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ExpenseRepo } from './expense.repo';
-import { CreateExpenseBodyType, GetExpensesQueryType, UpdateExpenseBodyType } from './expense.model';
+import { CreateExpenseBodyType, GetExpensesQueryPaginationType, GetExpensesQueryType, UpdateExpenseBodyType } from './expense.model';
 
 @Injectable()
 export class ExpenseService {
@@ -34,11 +34,21 @@ export class ExpenseService {
     return await this.expenseRepo.delete(id);
   }
 
-  async getExpensesByProject(projectId: number) {
-    return await this.expenseRepo.getExpensesByProject(projectId);
+  async getExpensesByProject(projectId: number, query: GetExpensesQueryPaginationType) {
+    return await this.expenseRepo.getExpensesByProject(projectId, query);
   }
 
-  async getTotalExpenseByProject(projectId: number) {
-    return await this.expenseRepo.getTotalExpenseByProject(projectId);
+  async getProjectExpenseSummary(projectId: number) {
+    const [totalAmount, totalItems, latestExpense] = await Promise.all([
+      this.expenseRepo.getTotalExpenseByProject(projectId),
+      this.expenseRepo.countExpenseByProject(projectId),
+      this.expenseRepo.getLatestExpenseByProject(projectId),
+    ]);
+
+    return {
+      totalAmount,
+      totalItems,
+      latestExpense,
+    };
   }
 }

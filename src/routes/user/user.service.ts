@@ -14,6 +14,15 @@ export class UserService {
     private readonly roleService: RoleService
   ) {}
 
+  async getUsers() {
+    try {
+      return await this.userRepo.getUsers();
+    } catch(e) {
+      console.log('Error from getUsers: ', e);
+      throw e;
+    }
+  }
+
   async create(data: CreateUserBodyType) {
     try {
       const passwordHash = await this.hasingService.hash(data.password);

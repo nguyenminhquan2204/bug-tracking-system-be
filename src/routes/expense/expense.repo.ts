@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Expense } from 'src/database/entities/expense.entity';
+import { Expense, ExpenseStatus } from 'src/database/entities/expense.entity';
 import { Repository } from 'typeorm';
-import { CreateExpenseBodyType, GetExpensesQueryType, UpdateExpenseBodyType } from './expense.model';
+import { CreateExpenseBodyType, GetExpensesQueryPaginationType, GetExpensesQueryType, UpdateExpenseBodyType } from './expense.model';
 
 @Injectable()
 export class ExpenseRepo {
@@ -81,12 +81,25 @@ export class ExpenseRepo {
     return await this.repository.softDelete(id);
   }
 
-  async getExpensesByProject(projectId: number) {
-    return await this.repository.find({
+  async getExpensesByProject(projectId: number, query: GetExpensesQueryPaginationType) {
+    const { page, limit, orderBy, orderDirection } = query;
+    const skip = (page - 1) * limit;
+
+    const [expenses, total] = await this.repository.findAndCount({
       where: { projectId },
       relations: ['buyer', 'manager'],
-      order: { createdAt: 'DESC' },
+      order: { [orderBy]: orderDirection },
+      skip,
+      take: limit,
     });
+
+    return {
+      items: expenses,
+      totalItems: total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    }
   }
 
   async getTotalExpenseByProject(projectId: number) {
@@ -94,9 +107,29 @@ export class ExpenseRepo {
       .createQueryBuilder('expense')
       .select('SUM(expense.amount)', 'total')
       .where('expense.projectId = :projectId', { projectId })
-      .where('expense.status = :status', { status: 'PAID' })
+      .andWhere('expense.status = :status', { status: 'PAID' })
       .getRawOne();
 
-    return result?.total || 0;
+    return Number(result?.total || 0);
+  }
+
+  async countExpenseByProject(projectId: number) {
+    return await this.repository.count({
+      where: {
+        projectId,
+      },
+    });
+  }
+
+  async getLatestExpenseByProject(projectId: number) {
+    return await this.repository.findOne({
+      where: {
+        projectId,
+        status: ExpenseStatus.PAID,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
 }

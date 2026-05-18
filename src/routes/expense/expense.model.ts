@@ -32,6 +32,14 @@ export const GetExpensesQuerySchema = ExpenseSchema.pick({
   limit: z.number().default(10),
 });
 
+export const GetExpensesQueryPaginationSchema = GetExpensesQuerySchema.pick({
+  page: true,
+  limit: true,
+}).extend({
+  orderBy: z.enum(['createdAt', 'paymentDate']).default('createdAt'),
+  orderDirection: z.enum(['ASC', 'DESC']).default('DESC'),
+}).strict();
+
 export const CreateExpenseBodySchema = ExpenseSchema.pick({
   name: true,
   description: true,
@@ -50,3 +58,4 @@ export type ExpenseType = z.infer<typeof ExpenseSchema>;
 export type CreateExpenseBodyType = z.infer<typeof CreateExpenseBodySchema>;
 export type UpdateExpenseBodyType = z.infer<typeof UpdateExpenseBodySchema>;
 export type GetExpensesQueryType = z.infer<typeof GetExpensesQuerySchema>;
+export type GetExpensesQueryPaginationType = z.infer<typeof GetExpensesQueryPaginationSchema>;

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query 
 import { SkipThrottle } from '@nestjs/throttler';
 import { DEFAULT_SUCCESS_MESSAGE, HttpStatus, SuccessResponse } from 'src/shared/helpers/response';
 import { ExpenseService } from '../expense.service';
-import { CreateExpenseBodyDTO, GetExpensesQueryDTO, UpdateExpenseBodyDTO } from '../expense.dto';
+import { CreateExpenseBodyDTO, GetExpensesQueryDTO, GetExpensesQueryPaginationDTO, UpdateExpenseBodyDTO } from '../expense.dto';
 
 @SkipThrottle()
 @Controller('expense')
@@ -16,14 +16,14 @@ export class ExpenseController {
   }
 
   @Get('project/:projectId')
-  async getByProject(@Param('projectId', ParseIntPipe) projectId: number) {
-    const response = await this.expenseService.getExpensesByProject(projectId);
+  async getByProject(@Param('projectId', ParseIntPipe) projectId: number, @Query() query: GetExpensesQueryPaginationDTO) {
+    const response = await this.expenseService.getExpensesByProject(projectId, query);
     return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
   }
 
-  @Get('project/:projectId/total')
-  async getTotalByProject(@Param('projectId', ParseIntPipe) projectId: number) {
-    const response = await this.expenseService.getTotalExpenseByProject(projectId);
+  @Get('project/:projectId/summary')
+  async getProjectExpenseSummary(@Param('projectId', ParseIntPipe) projectId: number) {
+    const response = await this.expenseService.getProjectExpenseSummary(projectId);
     return new SuccessResponse(response, DEFAULT_SUCCESS_MESSAGE, HttpStatus.OK);
   }
 
