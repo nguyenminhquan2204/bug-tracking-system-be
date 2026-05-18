@@ -19,6 +19,11 @@ export const BugSchema = z.object({
    deletedBy: z.number().nullable().optional(),
 })
 
+export const GetBugDashboardQuerySchema = z.object({
+   fromDate: z.date(),
+   toDate: z.date()
+}).strict();
+
 export const CreateBugBodySchema = BugSchema.pick({
    title: true,
    description: true,
@@ -74,3 +79,4 @@ export type UpdateBugBodyType = z.infer<typeof UpdateBugBodySchema>;
 export type GetBugsQueryBodyType = z.infer<typeof GetBugsQueryBodySchema>;
 export type GetBugsResType = z.infer<typeof GetBugsResSchema>;
 export type BuggetListQueryType = z.infer<typeof BugGetListQuerySchema>;
+export type GetBugDashboardQueryType = z.infer<typeof GetBugDashboardQuerySchema>;

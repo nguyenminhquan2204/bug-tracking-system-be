@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BugRepo } from './repos/bug.repo';
-import { CreateBugBodyType, GetBugsQueryBodyType, UpdateBugBodyType } from './models/bug.model';
+import { CreateBugBodyType, GetBugDashboardQueryType, GetBugsQueryBodyType, UpdateBugBodyType } from './models/bug.model';
 import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
 import { BugCommentRepo } from './repos/bug-comment.repo';
 import { BugAttachmentRepo } from './repos/bug-attachment.repo';
@@ -58,6 +58,14 @@ export class BugService {
 
    getAll(projectId: number, search?: string) {
       return this.bugRepo.getAll(projectId, search);
+   }
+
+   async getBugDashboardWithProjectId(projectId: number, query: GetBugDashboardQueryType) {
+      return await this.bugRepo.getBugDashboardWithProjectId(projectId, query);
+   }
+
+   async getBugDashboardWithProjectIdForBody(projectId: number, query: GetBugDashboardQueryType) {
+      return await this.bugRepo.getBugDashboardWithProjectIdForBody(projectId, query);
    }
 
    async getDashboardAdmin(projectId: number) {

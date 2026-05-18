@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Between, ILike, MoreThanOrEqual, Repository } from 'typeorm';
 import { Bug } from 'src/database/entities/bug.entity';
-import { BugType, CreateBugBodyType, GetBugsQueryBodyType, GetBugsResType, UpdateBugBodyType } from '../models/bug.model';
+import { BugType, CreateBugBodyType, GetBugDashboardQueryType, GetBugsQueryBodyType, GetBugsResType, UpdateBugBodyType } from '../models/bug.model';
 import { BugPriority, BugStatus } from 'src/shared/constants/bug.constant';
 import { BugHistoryRepo } from './bug-history.repo';
 import { subDays, startOfDay, format } from 'date-fns';
@@ -173,7 +173,154 @@ export class BugRepo {
       return result.map(item => ({
          name: item.priority,
          open: Number(item.count),
-   }));
+      }));
+   }
+
+   async getBugDashboardWithProjectId(projectId: number, query: GetBugDashboardQueryType) {
+      try {
+         const { fromDate, toDate } = query;
+         const filter: any = {
+            projectId,
+         };
+
+         if (fromDate && toDate) {
+            filter.createdAt = Between(
+               new Date(fromDate),
+               new Date(toDate),
+            );
+         }
+
+         const totalBugPromise = this.repository.count({
+            where: filter,
+         });
+
+         const startOfWeek = new Date();
+         const currentDay = startOfWeek.getDay(); 
+
+         const distanceToMonday = currentDay === 0 ? 6 : currentDay - 1;
+
+         startOfWeek.setDate(startOfWeek.getDate() - distanceToMonday);
+         startOfWeek.setHours(0, 0, 0, 0);
+
+         const bugCreatedThisWeekPromise = this.repository.count({
+            where: {
+               projectId,
+               createdAt: MoreThanOrEqual(startOfWeek),
+            },
+         });
+
+         const todoBugPromise = this.repository.count({
+            where: {
+               ...filter,
+               status: BugStatus.TODO,
+            },
+         });
+
+         const criticalBugPromise = this.repository.count({
+            where: {
+               ...filter,
+               priority: BugPriority.CRITICAL,
+            },
+         });
+
+         const doneInDevBugPromise = this.repository.count({
+            where: {
+               ...filter,
+               status: BugStatus.DONE_IN_DEV,
+            },
+         });
+
+         const last30Days = new Date();
+         last30Days.setDate(last30Days.getDate() - 30);
+
+         const fixedBugs = await this.repository.find({
+            where: {
+               projectId,
+               status: BugStatus.DONE_IN_DEV,
+               updatedAt: MoreThanOrEqual(last30Days),
+            },
+         });
+
+         let avgFixTimeHours = 0;
+
+         if (fixedBugs.length > 0) {
+            const totalFixTime = fixedBugs.reduce((sum, bug) => {
+               const createdAt = new Date(bug.createdAt).getTime();
+               const updatedAt = new Date(bug.updatedAt).getTime();
+
+               return sum + (updatedAt - createdAt);
+            }, 0);
+
+            avgFixTimeHours =
+               totalFixTime /
+               fixedBugs.length /
+               (1000 * 60 * 60);
+         }
+
+         const [
+            totalBug,
+            bugCreatedThisWeek,
+            todoBug,
+            criticalBug,
+            doneInDevBug,
+         ] = await Promise.all([
+            totalBugPromise,
+            bugCreatedThisWeekPromise,
+            todoBugPromise,
+            criticalBugPromise,
+            doneInDevBugPromise,
+         ]);
+
+         const completionPercentage =
+            totalBug > 0
+               ? Number(((doneInDevBug / totalBug) * 100).toFixed(2))
+               : 0;
+
+         return {
+            totalBug,
+            bugCreatedThisWeek,
+            todoBug,
+            criticalBug,
+            doneInDevBug,
+            completionPercentage,
+            averageFixTimeHours: Number(
+               avgFixTimeHours.toFixed(2),
+            ),
+         };
+      } catch (error) {
+         console.log('Error from getBugDashboardWithProjectId: ', error);
+         throw error;
+      }
+   }
+
+   async getBugDashboardWithProjectIdForBody(projectId: number, query: GetBugDashboardQueryType) {
+      const { fromDate, toDate } = query;
+
+      const startOfDay = new Date(fromDate);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(toDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const bugs = await this.repository.find({
+         where: {
+            projectId: projectId,
+            createdAt: Between(startOfDay, endOfDay)
+         },
+         relations: {
+            developer: true,
+            reporter: true
+         }
+      });
+
+      return {
+         projectId,
+         items: bugs,
+         period: {
+            from: fromDate,
+            to: toDate
+         }
+      };
    }
 
    async getDashboardAdminAll() {
